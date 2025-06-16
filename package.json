@@ -10,11 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@web3auth/base": "^9.7.0",
-    "@web3auth/ethereum-provider": "^9.7.0",
-    "@web3auth/modal": "^10.0.0",
-    "@web3auth/metamask-adapter": "^9.7.0",
-    "@web3auth/wallet-connect-v2-adapter": "^9.7.0",
+    "@web3auth/base": "^8.12.4",
+    "@web3auth/ethereum-provider": "^8.12.4",
+    "@web3auth/modal": "^8.12.4",
+    "@web3auth/metamask-adapter": "^8.12.4",
+    "@web3auth/wallet-connect-v2-adapter": "^8.12.4",
     "ethers": "^6.13.4",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.321.0",
