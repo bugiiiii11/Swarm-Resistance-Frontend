@@ -5,13 +5,18 @@ import { Gamepad2, Shield } from 'lucide-react';
 const EcosystemOverview = () => {
   const sectionRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   
-  // Mobile detection
+  // Mobile detection and viewport height tracking
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const updateViewport = () => {
+      setIsMobile(window.innerWidth < 768);
+      setViewportHeight(window.innerHeight);
+    };
+    
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+    return () => window.removeEventListener('resize', updateViewport);
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -33,16 +38,8 @@ const EcosystemOverview = () => {
     left: Math.random() * 100,
     color: i % 4 === 0 ? "#FF8C00" : i % 4 === 1 ? "#60A5FA" : i % 4 === 2 ? "#8B5CF6" : "#22C55E"
   }));
-
-  // Reduced fire particles on mobile
-  const fireParticles = Array.from({ length: isMobile ? 3 : 8 }).map((_, i) => ({
-    id: i,
-    delay: i * 1.2,
-    duration: isMobile ? 8 : 6 + Math.random() * 3,
-    left: 10 + Math.random() * 80,
-  }));
   
-  // Updated feature cards with current features and wider styling
+  // Updated feature cards with improved UX content
   const missionObjectives = [
     {
       icon: (
@@ -52,23 +49,30 @@ const EcosystemOverview = () => {
         </svg>
       ),
       title: "MEDA SHOOTER",
-      description: "Train your combat skills in our 2D space shooter. Deploy Hero and Weapon NFTs to enhance your abilities.",
+      description: "Play an ancient game from Cryptomeda to train your reflexes and shooting skills. Top 10 players earn Meda Gas daily.",
+      action: "Play Now",
+      isLive: true,
+      link: "/meda-shooter",
       borderColor: "border-phoenix-primary/30",
       shadowColor: "0 0 30px rgba(255, 140, 0, 0.5)",
       underlineColor: "#FF8C00"
     },
     {
-      icon: <Gamepad2 size={32} className="text-resistance-light" />,
-      title: "BATTLE MISSIONS",
-      description: "Complete daily challenges and tactical operations. Earn Meda Gas through various combat scenarios.",
+      icon: <Shield size={32} className="text-resistance-light" />,
+      title: "RESISTANCE HUB",
+      description: "Complete daily missions and tactical challenges and earn rewards in the form of Meda Gas for joining the resistance.",
+      action: "Coming Soon",
+      isLive: false,
       borderColor: "border-resistance-light/30",
       shadowColor: "0 0 30px rgba(59, 130, 246, 0.5)",
       underlineColor: "#3B82F6"
     },
     {
-      icon: <Shield size={32} className="text-energy-green" />,
-      title: "RESISTANCE HUB",
-      description: "Access all missions and activities here. Your gateway to earning Meda Gas for Phoenix Essence airdrops.",
+      icon: <Gamepad2 size={32} className="text-energy-green" />,
+      title: "SWARM DOMINION",
+      description: "Deploy your hero artifacts and legendary weapons to liberate lands occupied by the Swarm. Generate Meda Gas based on your Power.",
+      action: "Coming Soon",
+      isLive: false,
       borderColor: "border-energy-green/30",
       shadowColor: "0 0 30px rgba(34, 197, 94, 0.5)",
       underlineColor: "#22C55E"
@@ -93,8 +97,27 @@ const EcosystemOverview = () => {
     }
   };
 
+  // Calculate responsive heights based on viewport
+  const getResponsiveHeights = () => {
+    const topBarHeight = isMobile ? 64 : 80;
+    const availableHeight = viewportHeight - topBarHeight;
+    
+    return {
+      sectionHeight: viewportHeight,
+      contentHeight: availableHeight,
+      headerHeight: Math.min(200, availableHeight * 0.35), // Increased proportion for header
+      objectivesHeight: Math.min(400, availableHeight * 0.65) // Increased proportion for objectives
+    };
+  };
+
+  const heights = getResponsiveHeights();
+
   return (
-    <div ref={sectionRef} className="min-h-screen w-full relative overflow-hidden bg-void-primary">
+    <div 
+      ref={sectionRef} 
+      className="w-full relative overflow-hidden bg-void-primary"
+      style={{ height: `${heights.sectionHeight}px` }}
+    >
       {/* Enhanced background layers - Optimized for mobile */}
       {!isMobile && (
         <motion.div 
@@ -130,7 +153,7 @@ const EcosystemOverview = () => {
         </div>
       )}
 
-      {/* Enhanced floating particles - Reduced on mobile */}
+      {/* Enhanced floating particles - Reduced on mobile, NO FIRE PARTICLES */}
       <motion.div 
         className="absolute inset-0 overflow-hidden pointer-events-none"
         style={{ y: particlesY }}
@@ -160,39 +183,17 @@ const EcosystemOverview = () => {
             }}
           />
         ))}
-        
-        {/* Phoenix fire particles - Reduced on mobile */}
-        {fireParticles.map(particle => (
-          <motion.div
-            key={`fire-${particle.id}`}
-            className={`absolute ${isMobile ? 'w-2 h-4' : 'w-4 h-8'} rounded-full`}
-            style={{
-              left: `${particle.left}%`,
-              background: 'linear-gradient(to top, #FF8C00, #FFB84D)',
-            }}
-            animate={{
-              y: ['100vh', '-50px'],
-              opacity: [0, 1, 1, 0],
-              scale: [0.8, 1.2, 1, 0.6]
-            }}
-            transition={{
-              duration: particle.duration,
-              delay: particle.delay,
-              repeat: Infinity,
-              ease: "easeOut"
-            }}
-          />
-        ))}
       </motion.div>
 
       {/* RESPONSIVE Section content */}
-      <div className="relative z-10 min-h-screen w-full">
+      <div className="relative z-10 w-full h-full">
         {/* Mobile Layout */}
         {isMobile ? (
           <div className="w-full h-full flex flex-col pt-16 pb-24 px-4">
             {/* Mobile Header */}
             <motion.div 
               className="text-center mb-8"
+              style={{ height: `${heights.headerHeight}px` }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -219,9 +220,9 @@ const EcosystemOverview = () => {
               </motion.p>
             </motion.div>
             
-            {/* Mobile Mission Objectives */}
+            {/* Mobile Mission Objectives - Compact layout with top-right buttons */}
             <motion.div 
-              className="space-y-6 mb-8"
+              className="space-y-4 flex-1 flex flex-col justify-center"
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
@@ -230,7 +231,7 @@ const EcosystemOverview = () => {
               {missionObjectives.map((objective, index) => (
                 <motion.div
                   key={index}
-                  className="rounded-xl overflow-hidden backdrop-blur-md transition-all duration-300 glass-phoenix p-6"
+                  className="rounded-xl overflow-hidden backdrop-blur-md transition-all duration-300 glass-phoenix p-4"
                   variants={itemVariants}
                   style={{
                     border: `2px solid rgba(255, 140, 0, 0.3)`,
@@ -241,131 +242,104 @@ const EcosystemOverview = () => {
                     transition: { duration: 0.3 }
                   }}
                 >
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center glass-resistance rounded-lg mr-3">
-                      {objective.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-orbitron font-bold text-stellar-white mb-2">
+                  {/* Header with icon, title, and button */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center flex-1">
+                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center glass-resistance rounded-lg mr-3">
+                        {objective.icon}
+                      </div>
+                      <h3 className="text-base font-orbitron font-bold text-stellar-white">
                         {objective.title}
                       </h3>
-                      <p className="text-neutral-light text-sm leading-relaxed">
-                        {objective.description}
-                      </p>
                     </div>
+                    
+                    {/* Action button - top right */}
+                    <motion.button
+                      className={`px-3 py-1.5 rounded-lg font-semibold text-xs transition-all duration-300 flex-shrink-0 ${
+                        objective.isLive
+                          ? 'bg-phoenix-primary/20 text-phoenix-primary border border-phoenix-primary/50 hover:bg-phoenix-primary/30'
+                          : 'bg-gray-500/20 text-gray-400 border border-gray-400/50 cursor-not-allowed'
+                      }`}
+                      whileHover={{ 
+                        scale: objective.isLive ? 1.05 : 1,
+                        boxShadow: objective.isLive ? `0 0 10px ${objective.underlineColor}40` : undefined
+                      }}
+                      disabled={!objective.isLive}
+                      onClick={() => {
+                        if (objective.isLive && objective.link) {
+                          window.location.href = objective.link;
+                        }
+                      }}
+                    >
+                      {objective.action}
+                    </motion.button>
                   </div>
+                  
+                  {/* Colorful line */}
+                  <motion.div 
+                    className="h-0.5 w-0 rounded-full mb-3"
+                    style={{ 
+                      background: `linear-gradient(90deg, ${objective.underlineColor}, ${objective.underlineColor}80)`,
+                      boxShadow: `0 0 6px ${objective.underlineColor}40`
+                    }}
+                    initial={{ width: 0 }}
+                    whileInView={{ width: "100%" }}
+                    transition={{ duration: 1.5, delay: 0.2 * index }}
+                  />
+                  
+                  {/* Description */}
+                  <p className="text-neutral-light text-xs leading-relaxed">
+                    {objective.description}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
-            
-            {/* Mobile Journey Steps */}
-            <motion.div 
-              className="space-y-8"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 1.5 }}
-            >
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-orbitron font-bold text-phoenix-primary mb-4">
-                  Your Resistance Journey
-                </h3>
-              </div>
-              
-              {/* Mobile Journey Steps */}
-              <div className="space-y-6">
-                {[
-                  {
-                    step: "[1] CONNECT WALLET",
-                    description: "Join the resistance with your Web3 identity",
-                    image: "/portal-city.png",
-                    color: "#3B82F6"
-                  },
-                  {
-                    step: "[2] JOIN THE FIGHT", 
-                    description: "Deploy NFTs, play games, complete missions",
-                    image: "/telegram-city.png",
-                    color: "#FF8C00"
-                  },
-                  {
-                    step: "[3] EARN REWARDS",
-                    description: "Accumulate Phoenix Essence for token airdrops", 
-                    image: "/polygon-planet.png",
-                    color: "#22C55E"
-                  }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    className="flex items-center space-x-4 glass-void rounded-xl p-4"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                  >
-                    <div 
-                      className="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0"
-                      style={{
-                        border: `2px solid ${item.color}80`,
-                        boxShadow: `0 0 15px ${item.color}40`
-                      }}
-                    >
-                      <img 
-                        src={item.image}
-                        alt={item.step}
-                        className="w-full h-full object-contain object-bottom"
-                        style={{ filter: `drop-shadow(0 0 8px ${item.color}40)` }}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-orbitron font-bold text-stellar-white mb-1">
-                        {item.step}
-                      </h4>
-                      <p className="text-neutral-light text-sm">
-                        {item.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
           </div>
         ) : (
-          /* Desktop Layout - Original */
-          <div className="pt-6 md:pl-64">
-            <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col">
+          /* Desktop Layout - OPTIMIZED FOR VIEWPORT HEIGHT */
+          <div className="pt-6 md:pl-64 h-full">
+            <div 
+              className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col"
+              style={{ height: `${heights.contentHeight}px` }}
+            >
               
-              {/* Section Header */}
+              {/* Section Header - Better spacing consistency */}
               <motion.div 
-                className="text-center mb-16"
+                className="text-center flex flex-col"
+                style={{ height: `${heights.headerHeight}px` }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
                 viewport={{ once: true }}
               >
-                <motion.h2 
-                  className="text-4xl md:text-5xl font-orbitron font-bold text-center mb-4 text-phoenix-primary relative inline-block"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1, delay: 0.2 }}
-                  viewport={{ once: true }}
-                >
-                  Fight the Swarm. Reclaim the Universe.
-                </motion.h2>
+                <div className="flex-1 flex flex-col justify-center">
+                  <motion.h2 
+                    className="text-3xl md:text-4xl lg:text-5xl font-orbitron font-bold text-center text-phoenix-primary relative inline-block mx-auto"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                    viewport={{ once: true }}
+                  >
+                    Fight the Swarm. Reclaim the Universe.
+                  </motion.h2>
+                </div>
                 
-                <motion.p 
-                  className="mt-4 text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed text-phoenix-light/80"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  The Swarm has invaded our galaxy, but the Resistance is ready to fight back. Join us in a series of epic missions to reclaim our universe and earn rewards along the way. Your journey begins here.
-                </motion.p>
+                <div className="flex-1 flex flex-col justify-center">
+                  <motion.p 
+                    className="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed text-phoenix-light/80"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.5 }}
+                    viewport={{ once: true }}
+                  >
+                    The Swarm has invaded our galaxy, but the Resistance is ready to fight back. Join us in a series of epic missions to reclaim our universe and earn rewards along the way. Your journey begins here.
+                  </motion.p>
+                </div>
               </motion.div>
               
-              {/* Mission Objectives Grid */}
+              {/* Mission Objectives Grid - Centered vertically in remaining space */}
               <motion.div 
-                className="grid md:grid-cols-3 gap-8 mb-16"
+                className="grid md:grid-cols-3 gap-6 flex-1 flex items-center"
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
@@ -374,37 +348,34 @@ const EcosystemOverview = () => {
                 {missionObjectives.map((objective, index) => (
                   <motion.div
                     key={index}
-                    className="relative rounded-xl overflow-hidden backdrop-blur-md transition-all duration-300 glass-phoenix p-8"
+                    className="relative rounded-xl overflow-hidden backdrop-blur-md transition-all duration-300 glass-phoenix p-6"
                     variants={itemVariants}
                     style={{
                       border: `2px solid rgba(255, 140, 0, 0.3)`,
-                      minHeight: '200px',
                       maxWidth: '400px',
-                      margin: '0 auto'
+                      margin: '0 auto',
+                      height: 'fit-content'
                     }}
                     whileHover={{ 
-                      y: -8,
-                      scale: 1.03,
+                      y: -6,
+                      scale: 1.02,
                       transition: { duration: 0.3 },
                       boxShadow: objective.shadowColor
                     }}
                   >
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center glass-resistance rounded-lg mr-4 mt-1">
+                    {/* Header with icon and title */}
+                    <div className="flex items-center mb-4">
+                      <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center glass-resistance rounded-lg mr-4">
                         {objective.icon}
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl md:text-2xl font-orbitron font-bold text-stellar-white mb-3">
-                          {objective.title}
-                        </h3>
-                        <p className="text-neutral-light text-base leading-relaxed">
-                          {objective.description}
-                        </p>
-                      </div>
+                      <h3 className="text-xl md:text-2xl font-orbitron font-bold text-stellar-white flex-1">
+                        {objective.title}
+                      </h3>
                     </div>
                     
+                    {/* Colorful line */}
                     <motion.div 
-                      className="h-1 w-0 rounded-full mt-6"
+                      className="h-1 w-0 rounded-full mb-6"
                       style={{ 
                         background: `linear-gradient(90deg, ${objective.underlineColor}, ${objective.underlineColor}80)`,
                         boxShadow: `0 0 8px ${objective.underlineColor}40`
@@ -413,106 +384,36 @@ const EcosystemOverview = () => {
                       whileInView={{ width: "100%" }}
                       transition={{ duration: 1.5, delay: 0.2 * index }}
                     />
+                    
+                    {/* Description */}
+                    <p className="text-neutral-light text-base leading-relaxed mb-6">
+                      {objective.description}
+                    </p>
+                    
+                    {/* Action button */}
+                    <div className="flex justify-center">
+                      <motion.button
+                        className={`px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${
+                          objective.isLive
+                            ? 'bg-phoenix-primary/20 text-phoenix-primary border border-phoenix-primary/50 hover:bg-phoenix-primary/30'
+                            : 'bg-gray-500/20 text-gray-400 border border-gray-400/50 cursor-not-allowed'
+                        }`}
+                        whileHover={{ 
+                          scale: objective.isLive ? 1.05 : 1,
+                          boxShadow: objective.isLive ? `0 0 15px ${objective.underlineColor}40` : undefined
+                        }}
+                        disabled={!objective.isLive}
+                        onClick={() => {
+                          if (objective.isLive && objective.link) {
+                            window.location.href = objective.link;
+                          }
+                        }}
+                      >
+                        {objective.action}
+                      </motion.button>
+                    </div>
                   </motion.div>
                 ))}
-              </motion.div>
-              
-              {/* Guardian Command Structure */}
-              <motion.div 
-                className="relative flex-1 flex items-start"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 1.5 }}
-              >
-                <div className="w-full max-w-7xl mx-auto rounded-xl p-8 overflow-hidden relative glass-void">
-                  
-                  {/* Command briefing header */}
-                  <div className="text-center mb-12">
-                    <h3 className="text-3xl md:text-4xl font-orbitron font-bold text-phoenix-primary mb-6">
-                      Your Resistance Journey
-                    </h3>
-                  </div>
-                  
-                  {/* Enhanced command flow with images */}
-                  <div className="relative mx-auto" style={{ minHeight: "400px", maxWidth: "1000px" }}>
-                    
-                    {/* Phase 1 - Connect Wallet */}
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 flex flex-col items-center">
-                      <motion.div 
-                        className="w-32 h-48 rounded-xl overflow-hidden relative z-20 mb-6 bg-gradient-to-b from-void-primary/20 to-transparent"
-                        style={{
-                          border: '3px solid rgba(59, 130, 246, 0.8)',
-                          boxShadow: '0 0 25px rgba(59, 130, 246, 0.5)',
-                          aspectRatio: '1400/2400'
-                        }}
-                        whileHover={{ 
-                          scale: 1.1,
-                          boxShadow: '0 0 35px rgba(59, 130, 246, 0.7)'
-                        }}
-                      >
-                        <img 
-                          src="/portal-city.png" 
-                          alt="Connect Wallet Character"
-                          className="w-full h-full object-contain object-bottom"
-                          style={{ filter: 'drop-shadow(0 0 10px rgba(59, 130, 246, 0.3))' }}
-                        />
-                      </motion.div>
-                      <h4 className="text-2xl md:text-3xl font-orbitron font-bold text-stellar-white mb-3">[1] CONNECT WALLET</h4>
-                      <p className="text-lg text-neutral-light text-center max-w-40">Join the resistance with your Web3 identity</p>
-                    </div>
-                    
-                    {/* Phase 2 - Join the Fight */}
-                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                      <motion.div 
-                        className="w-32 h-48 rounded-xl overflow-hidden relative z-20 mb-6 bg-gradient-to-b from-void-primary/20 to-transparent"
-                        style={{
-                          border: '3px solid rgba(255, 140, 0, 0.8)',
-                          boxShadow: '0 0 25px rgba(255, 140, 0, 0.5)',
-                          aspectRatio: '1400/2400'
-                        }}
-                        whileHover={{ 
-                          scale: 1.1,
-                          boxShadow: '0 0 35px rgba(255, 140, 0, 0.7)'
-                        }}
-                      >
-                        <img 
-                          src="/telegram-city.png" 
-                          alt="Join the Fight Character"
-                          className="w-full h-full object-contain object-bottom"
-                          style={{ filter: 'drop-shadow(0 0 10px rgba(255, 140, 0, 0.3))' }}
-                        />
-                      </motion.div>
-                      <h4 className="text-2xl md:text-3xl font-orbitron font-bold text-stellar-white mb-3">[2] JOIN THE FIGHT</h4>
-                      <p className="text-lg text-neutral-light text-center max-w-44">Deploy NFTs, play games, complete missions</p>
-                    </div>
-                    
-                    {/* Phase 3 - Earn Rewards */}
-                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 flex flex-col items-center">
-                      <motion.div 
-                        className="w-32 h-48 rounded-xl overflow-hidden relative z-20 mb-6 bg-gradient-to-b from-void-primary/20 to-transparent"
-                        style={{
-                          border: '3px solid rgba(34, 197, 94, 0.8)',
-                          boxShadow: '0 0 25px rgba(34, 197, 94, 0.5)',
-                          aspectRatio: '1400/2400'
-                        }}
-                        whileHover={{ 
-                          scale: 1.1,
-                          boxShadow: '0 0 35px rgba(34, 197, 94, 0.7)'
-                        }}
-                      >
-                        <img 
-                          src="/polygon-planet.png" 
-                          alt="Earn Rewards Character"
-                          className="w-full h-full object-contain object-bottom"
-                          style={{ filter: 'drop-shadow(0 0 10px rgba(34, 197, 94, 0.3))' }}
-                        />
-                      </motion.div>
-                      <h4 className="text-2xl md:text-3xl font-orbitron font-bold text-stellar-white mb-3">[3] EARN REWARDS</h4>
-                      <p className="text-lg text-neutral-light text-center max-w-40">Accumulate Phoenix Essence for token airdrops</p>
-                    </div>
-                  </div>
-                </div>
               </motion.div>
             </div>
           </div>

@@ -28,13 +28,63 @@ const HomePage = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Scroll to section function
+  // Enhanced scrollToSection function with mobile optimization
   const scrollToSection = useCallback((sectionId) => {
+    console.log('Scrolling to section:', sectionId); // Debug log
+    
     const element = document.getElementById(sectionId);
-    if (element) {
-      const topBarHeight = isMobile ? 64 : 80;
+    if (!element) {
+      console.error('Element not found:', sectionId);
+      return;
+    }
+    
+    // Mobile-specific scroll handling
+    if (isMobile) {
+      // For mobile, use a more robust scrolling method
+      const topBarHeight = 64; // Mobile top bar height
+      
+      // Get element position relative to document
+      const elementRect = element.getBoundingClientRect();
+      const documentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const elementTop = elementRect.top + documentScrollTop;
+      
+      // Calculate target scroll position
+      const targetScrollTop = elementTop - topBarHeight;
+      
+      console.log('Mobile scroll details:', {
+        elementId: sectionId,
+        elementTop,
+        targetScrollTop,
+        currentScroll: documentScrollTop
+      });
+      
+      // Use smooth scroll with better mobile support
       window.scrollTo({
-        top: element.offsetTop - topBarHeight,
+        top: Math.max(0, targetScrollTop), // Ensure we don't scroll negative
+        behavior: 'smooth'
+      });
+      
+      // Fallback for browsers that don't support smooth scrolling
+      setTimeout(() => {
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (Math.abs(currentScroll - targetScrollTop) > 50) {
+          console.log('Fallback scroll triggered');
+          element.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
+        }
+      }, 100);
+      
+    } else {
+      // Desktop scrolling (existing logic)
+      const topBarHeight = 80;
+      const elementTop = element.offsetTop;
+      const targetScrollTop = elementTop - topBarHeight;
+      
+      window.scrollTo({
+        top: targetScrollTop,
         behavior: 'smooth'
       });
     }
@@ -59,21 +109,23 @@ const HomePage = () => {
     }
   }, [scrollToSection]);
 
-  // Mobile section change handler for bottom navigation
+  // Enhanced mobile section change handler for bottom navigation
   const handleMobileSectionChange = useCallback((targetSection) => {
     if (!isNavigating && activeSection !== targetSection) {
       console.log('Mobile navigation: changing to', targetSection);
       
-      // For mobile, just scroll to section smoothly (no warp effect)
+      // Immediately update active section for visual feedback
       setActiveSection(targetSection);
       
-      // Dispatch section change event
+      // Dispatch section change event for other components
       window.dispatchEvent(new CustomEvent('sectionChange', { 
         detail: { section: targetSection } 
       }));
       
-      // Smooth scroll to section
-      scrollToSection(targetSection);
+      // Small delay to ensure state update, then scroll
+      setTimeout(() => {
+        scrollToSection(targetSection);
+      }, 50);
     }
   }, [isNavigating, activeSection, scrollToSection]);
 
@@ -195,15 +247,72 @@ const HomePage = () => {
     };
   }, [isMobile, handleSectionChange]);
 
-  // Standard scroll tracking for mobile - works with normal scrolling
+  // Enhanced scroll tracking for mobile - works with normal scrolling
   useEffect(() => {
+    if (!isMobile) return; // Only for mobile
+    
+    const handleScroll = () => {
+      // Don't track during navigation or transitions
+      if (isNavigating || document.body.classList.contains('warping')) {
+        return;
+      }
+      
+      const topBarHeight = 64;
+      const currentScrollY = window.scrollY;
+      
+      // Find which section is currently in view
+      const sections = ['home', 'ecosystem', 'metrics', 'join'];
+      let currentSection = 'home';
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const element = document.getElementById(sections[i]);
+        if (element) {
+          const elementTop = element.offsetTop;
+          if (currentScrollY + topBarHeight + 100 >= elementTop) {
+            currentSection = sections[i];
+            break;
+          }
+        }
+      }
+      
+      // Update active section if it changed
+      if (activeSection !== currentSection) {
+        console.log('Scroll-based section change to:', currentSection);
+        setActiveSection(currentSection);
+        
+        // Dispatch section change event for bottom nav update
+        window.dispatchEvent(new CustomEvent('sectionChange', { 
+          detail: { section: currentSection } 
+        }));
+      }
+    };
+
+    // Throttled scroll handler for performance
+    let scrollTimeout;
+    const debouncedHandleScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(handleScroll, 100);
+    };
+
+    window.addEventListener('scroll', debouncedHandleScroll, { passive: true });
+
+    return () => {
+      clearTimeout(scrollTimeout);
+      window.removeEventListener('scroll', debouncedHandleScroll);
+    };
+  }, [activeSection, isNavigating, isMobile]);
+
+  // Standard scroll tracking for desktop - works with normal scrolling
+  useEffect(() => {
+    if (isMobile) return; // Skip for mobile
+    
     const handleScroll = () => {
       // Don't track scroll during navigation or wheel scrolling
       if (isNavigating || isWheelScrolling || document.body.classList.contains('warping')) {
         return;
       }
       
-      const topBarHeight = isMobile ? 64 : 80;
+      const topBarHeight = 80;
       const scrollPosition = window.scrollY + topBarHeight + 100;
 
       for (let i = sectionOrder.length - 1; i >= 0; i--) {
@@ -227,7 +336,7 @@ const HomePage = () => {
       scrollTimeout = setTimeout(handleScroll, 100);
     };
 
-    // Enable scroll tracking for mobile (standard scrolling)
+    // Enable scroll tracking for desktop (standard scrolling)
     window.addEventListener('scroll', debouncedHandleScroll, { passive: true });
 
     return () => {

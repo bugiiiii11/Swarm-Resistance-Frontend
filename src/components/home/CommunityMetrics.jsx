@@ -55,15 +55,20 @@ const CommunityMetrics = () => {
   const [counters, setCounters] = useState(metricsData.map(() => 0));
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   const sectionRef = useRef(null);
   const animationTriggered = useRef(false);
 
-  // Mobile detection
+  // Mobile detection and viewport height tracking
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const updateViewport = () => {
+      setIsMobile(window.innerWidth < 768);
+      setViewportHeight(window.innerHeight);
+    };
+    
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+    return () => window.removeEventListener('resize', updateViewport);
   }, []);
 
   // Counter animation effect
@@ -118,8 +123,29 @@ const CommunityMetrics = () => {
     };
   }, [isMobile]);
 
+  // Calculate responsive heights based on viewport
+  const getResponsiveHeights = () => {
+    const topBarHeight = isMobile ? 64 : 80;
+    const availableHeight = viewportHeight - topBarHeight;
+    
+    return {
+      sectionHeight: viewportHeight,
+      contentHeight: availableHeight,
+      headerHeight: Math.min(120, availableHeight * 0.15),
+      visualHeight: Math.min(600, availableHeight * 0.65), // Increased for better city layout
+      cityHeight: Math.min(400, availableHeight * 0.4), // Dedicated city area height
+      buildingHeight: Math.min(320, availableHeight * 0.35), // Buildings height
+      metricsHeight: Math.min(180, availableHeight * 0.2) // Reduced to fit better
+    };
+  };
+
+  const heights = getResponsiveHeights();
+
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
+    <div 
+      className="w-full relative overflow-hidden"
+      style={{ height: `${heights.sectionHeight}px` }}
+    >
       {/* Simplified background */}
       <div className="absolute inset-0 w-full h-full">
         <div className="absolute inset-0 bg-gradient-to-b from-void-primary via-void-secondary to-resistance-primary/30" />
@@ -155,13 +181,14 @@ const CommunityMetrics = () => {
       </div>
 
       {/* RESPONSIVE Section content */}
-      <div className="relative z-10 min-h-screen w-full">
+      <div className="relative z-10 w-full h-full">
         {/* Mobile Layout */}
         {isMobile ? (
           <div className="w-full h-full flex flex-col pt-16 pb-24 px-4">
             {/* Mobile Header */}
             <motion.div 
-              className="text-center mb-8"
+              className="text-center mb-6"
+              style={{ height: `${heights.headerHeight}px` }}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -264,9 +291,12 @@ const CommunityMetrics = () => {
             </div>
           </div>
         ) : (
-          /* Desktop Layout - Original with optimizations */
-          <div className="pt-6 md:pl-64">
-            <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col">
+          /* Desktop Layout - OPTIMIZED FOR VIEWPORT HEIGHT */
+          <div className="pt-6 md:pl-64 h-full">
+            <div 
+              className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col"
+              style={{ height: `${heights.contentHeight}px` }}
+            >
               
               {/* Simplified transition from previous section - Desktop only */}
               <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-20">      
@@ -296,16 +326,17 @@ const CommunityMetrics = () => {
                 </div>
               </div>
               
-              {/* Section Header */}
+              {/* Section Header - Responsive height */}
               <motion.div 
-                className="text-center mb-8"
+                className="text-center"
+                style={{ height: `${heights.headerHeight}px` }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
                 viewport={{ once: true }}
               >
                 <motion.h2 
-                  className="text-4xl md:text-5xl font-orbitron font-bold text-center mb-3 text-phoenix-primary relative inline-block"
+                  className="text-3xl md:text-4xl lg:text-5xl font-orbitron font-bold text-center mb-3 text-phoenix-primary relative inline-block"
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1, delay: 0.2 }}
@@ -325,17 +356,20 @@ const CommunityMetrics = () => {
                 </motion.p>
               </motion.div>
 
-              {/* Content positioned to fit screen */}
-              <div className="flex-1 flex flex-col justify-end relative">
+              {/* Content positioned to fit remaining height */}
+              <div 
+                className="flex-1 flex flex-col justify-start relative"
+                style={{ height: `${heights.visualHeight}px` }}
+              >
                 
                 {/* Traffic animation positioned absolutely */}
-                <div className="absolute top-20 left-0 right-0 h-20 pointer-events-none z-10">
+                <div className="absolute top-8 left-0 right-0 h-20 pointer-events-none z-10">
                   {[...Array(2)].map((_, i) => (
                     <motion.div
                       key={`gold-line-${i}`}
                       className="absolute"
                       style={{
-                        top: `${20 + i * 30}px`,
+                        top: `${10 + i * 25}px`,
                         left: '-150px',
                         height: '2px',
                         width: '80px',
@@ -360,22 +394,30 @@ const CommunityMetrics = () => {
                   ))}
                 </div>
                 
-                {/* Main visual section - increased height for full city horizon */}
-                <div className="relative" style={{ height: '700px' }}>
+                {/* City and Buildings Section - Better positioned */}
+                <div 
+                  className="relative flex-1 flex flex-col justify-end"
+                  style={{ 
+                    height: `${heights.cityHeight}px`,
+                    marginTop: '40px' // Reduced margin to give more space for city
+                  }}
+                >
                   
-                  {/* City horizon background - full width, much larger height */}
+                  {/* City horizon background - FIXED: Full 400px height with proper container */}
                   <div className="absolute bottom-0 w-screen left-1/2 transform -translate-x-1/2">
                     <div 
-                      className="w-full h-[500px] bg-no-repeat bg-bottom opacity-40"
+                      className="w-full bg-no-repeat bg-center opacity-40"
                       style={{ 
                         backgroundImage: "url('/buildings/city-horizon.png')",
                         backgroundSize: "cover",
-                        backgroundPosition: "center bottom"
+                        backgroundPosition: "center center", // Changed to center to show full image
+                        height: '500px', // Exact image height
+                        minHeight: '400px' // Ensure minimum 400px
                       }}
                     />
                   </div>
                   
-                  {/* Buildings positioned to align with city horizon - bigger sizes */}
+                  {/* Buildings positioned to align with city horizon - Better positioning */}
                   <div ref={sectionRef} className="absolute bottom-0 left-0 right-0 z-10">
                     <div className="flex justify-between items-end max-w-6xl mx-auto px-4">
                       {metricsData.map((metric, index) => (
@@ -384,7 +426,7 @@ const CommunityMetrics = () => {
                             {/* Hover glow effect */}
                             {hoveredIndex === index && (
                               <motion.div
-                                className="absolute inset-0 -m-10 rounded-full pointer-events-none"
+                                className="absolute inset-0 -m-8 rounded-full pointer-events-none"
                                 style={{
                                   background: `radial-gradient(circle, ${metric.color}20 0%, transparent 60%)`,
                                 }}
@@ -398,15 +440,17 @@ const CommunityMetrics = () => {
                             <motion.img 
                               src={metric.buildingImage} 
                               alt={metric.title}
-                              className="h-[220px] md:h-[280px] lg:h-[350px] object-contain transform-gpu cursor-pointer"
+                              className="object-contain transform-gpu cursor-pointer"
                               style={{ 
-                                transformOrigin: 'bottom center'
+                                transformOrigin: 'bottom center',
+                                height: `${Math.min(heights.buildingHeight, 280)}px`,
+                                maxHeight: '280px' // Slightly reduced to fit better with 400px city
                               }}
                               animate={{
-                                scale: hoveredIndex === index ? 1.15 : 1,
+                                scale: hoveredIndex === index ? 1.1 : 1,
                                 filter: hoveredIndex === index 
-                                  ? `drop-shadow(0 0 30px ${metric.color})`
-                                  : `drop-shadow(0 0 20px ${metric.color}50)`
+                                  ? `drop-shadow(0 0 25px ${metric.color})`
+                                  : `drop-shadow(0 0 15px ${metric.color}50)`
                               }}
                               transition={{ duration: 0.2 }}
                               onHoverStart={() => setHoveredIndex(index)}
@@ -423,16 +467,16 @@ const CommunityMetrics = () => {
                   </div>
                   
                   {/* Energy lines positioned BELOW buildings */}
-                  <div className="absolute -bottom-8 left-0 right-0 z-10">
+                  <div className="absolute -bottom-4 left-0 right-0 z-10">
                     <div className="max-w-6xl mx-auto px-4">
                       <div className="grid grid-cols-4 gap-4">
                         {metricsData.map((metric, index) => (
                           <motion.div
                             key={index}
-                            className="h-[3px] rounded-full"
+                            className="h-[2px] rounded-full"
                             style={{
                               background: `linear-gradient(90deg, transparent, ${metric.color}, transparent)`,
-                              boxShadow: `0 0 8px ${metric.color}80`
+                              boxShadow: `0 0 6px ${metric.color}80`
                             }}
                             animate={{
                               opacity: [0.6, 1, 0.6],
@@ -450,9 +494,12 @@ const CommunityMetrics = () => {
                   </div>
                 </div>
                 
-                {/* Metrics Cards - bigger size with better spacing */}
-                <div className="mt-12 mb-20">
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
+                {/* Metrics Cards - Positioned with better spacing */}
+                <div 
+                  className="w-full mt-8"
+                  style={{ height: `${heights.metricsHeight}px` }}
+                >
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-6xl mx-auto px-4">
                     {metricsData.map((metric, index) => (
                       <motion.div
                         key={index}
@@ -460,15 +507,15 @@ const CommunityMetrics = () => {
                         whileInView={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.6, delay: index * 0.1 }}
                         viewport={{ once: true }}
-                        className="text-center p-8 relative overflow-hidden group rounded-lg cursor-pointer backdrop-blur-md"
+                        className="text-center p-3 relative overflow-hidden group rounded-lg cursor-pointer backdrop-blur-md"
                         style={{
                           background: 'rgba(15, 15, 35, 0.4)',
                           border: `2px solid ${metric.color}`,
-                          boxShadow: `0 0 20px ${metric.color}40`
+                          boxShadow: `0 0 15px ${metric.color}40`
                         }}
                         whileHover={{ 
-                          y: -8,
-                          boxShadow: `0 0 30px ${metric.color}70`
+                          y: -3,
+                          boxShadow: `0 0 25px ${metric.color}70`
                         }}
                         onHoverStart={() => setHoveredIndex(index)}
                         onHoverEnd={() => setHoveredIndex(null)}
@@ -491,12 +538,12 @@ const CommunityMetrics = () => {
                           }}
                         />
                         
-                        {/* Corner accent - bigger */}
+                        {/* Corner accent */}
                         <motion.div
-                          className="absolute top-3 left-3 w-2 h-2 rounded-full"
+                          className="absolute top-1.5 left-1.5 w-1 h-1 rounded-full"
                           style={{
                             background: metric.color,
-                            boxShadow: `0 0 8px ${metric.color}`
+                            boxShadow: `0 0 4px ${metric.color}`
                           }}
                           animate={{
                             opacity: [0.6, 1, 0.6],
@@ -509,24 +556,24 @@ const CommunityMetrics = () => {
                           }}
                         />
                         
-                        {/* Title - bigger */}
-                        <h3 className="text-xl md:text-2xl font-bold mb-6 font-orbitron tracking-wide"
+                        {/* Title - Responsive font size */}
+                        <h3 className="text-xs md:text-sm lg:text-base font-bold mb-1 font-orbitron tracking-wide"
                             style={{ color: metric.color }}>
                           {metric.title}
                         </h3>
                         
-                        {/* Value - bigger */}
-                        <div className="font-jetbrains text-4xl md:text-5xl font-bold mb-4">
+                        {/* Value - Responsive font size */}
+                        <div className="font-jetbrains text-lg md:text-xl lg:text-2xl font-bold">
                           <motion.span 
                             className={metric.textColor}
                             style={{
-                              textShadow: `0 0 10px ${metric.color}70`
+                              textShadow: `0 0 8px ${metric.color}70`
                             }}
                             animate={{ 
                               textShadow: [
-                                `0 0 10px ${metric.color}70`, 
-                                `0 0 15px ${metric.color}90`, 
-                                `0 0 10px ${metric.color}70`
+                                `0 0 8px ${metric.color}70`, 
+                                `0 0 12px ${metric.color}90`, 
+                                `0 0 8px ${metric.color}70`
                               ] 
                             }}
                             transition={{ duration: 2, repeat: Infinity }}
@@ -535,9 +582,9 @@ const CommunityMetrics = () => {
                           </motion.span>
                         </div>
 
-                        {/* Bottom accent line - enhanced */}
+                        {/* Bottom accent line */}
                         <motion.div
-                          className="absolute bottom-0 left-0 w-full h-1.5 rounded-b-lg"
+                          className="absolute bottom-0 left-0 w-full h-0.5 rounded-b-lg"
                           style={{
                             background: `linear-gradient(90deg, transparent, ${metric.color}, transparent)`
                           }}
@@ -558,8 +605,8 @@ const CommunityMetrics = () => {
               </div>
             </div>
             
-            {/* Desktop-only Ground Effect */}
-            <div className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-5">
+            {/* Desktop-only Ground Effect - Positioned at bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none z-5">
               {/* Main grid floor */}
               <motion.div
                 className="absolute bottom-0 left-0 right-0 h-full opacity-50"
@@ -585,7 +632,7 @@ const CommunityMetrics = () => {
                 }}
               />
               
-              {/* Horizontal grid lines */}
+              {/* Additional ground effects... */}
               {[...Array(3)].map((_, i) => (
                 <motion.div
                   key={`grid-h-${i}`}
@@ -607,59 +654,15 @@ const CommunityMetrics = () => {
                   }}
                 />
               ))}
-              
-              {/* Data particles */}
-              {[...Array(2)].map((_, i) => (
-                <motion.div
-                  key={`data-particle-${i}`}
-                  className="absolute w-2 h-2 rounded-full"
-                  style={{
-                    background: i % 2 === 0 ? 'rgba(0, 240, 255, 1)' : 'rgba(255, 140, 0, 1)',
-                    boxShadow: `0 0 10px ${i % 2 === 0 ? '#00F0FF' : '#FF8C00'}`,
-                    bottom: '60px',
-                    transform: 'perspective(800px) rotateX(75deg)',
-                    transformOrigin: 'bottom center'
-                  }}
-                  animate={{
-                    x: ['-80px', 'calc(100vw + 80px)'],
-                    opacity: [0, 1, 1, 0]
-                  }}
-                  transition={{
-                    duration: 8 + i * 2,
-                    delay: i * 4,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                />
-              ))}
-              
-              {/* Center energy pulse */}
-              <motion.div
-                className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-16"
-                style={{
-                  background: 'radial-gradient(ellipse at center bottom, rgba(0, 240, 255, 0.3) 0%, transparent 60%)',
-                  transform: 'perspective(800px) rotateX(75deg)',
-                  transformOrigin: 'bottom center'
-                }}
-                animate={{
-                  opacity: [0.3, 0.6, 0.3],
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
             </div>
             
             {/* Transition to next section - Desktop only */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none z-20">
+            <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none z-20">
               <div className="absolute inset-0" style={{ left: '16rem' }}>
                 {[...Array(3)].map((_, i) => (
                   <motion.div
                     key={`descent-stream-${i}`}
-                    className="absolute w-1 h-12 rounded-full"
+                    className="absolute w-1 h-8 rounded-full"
                     style={{
                       left: `${40 + i * 10}%`,
                       bottom: '10px',
@@ -667,11 +670,11 @@ const CommunityMetrics = () => {
                       filter: 'blur(1px)'
                     }}
                     animate={{
-                      y: ['0px', '-80px'],
+                      y: ['0px', '-40px'],
                       opacity: [0, 0.4, 0]
                     }}
                     transition={{
-                      duration: 3,
+                      duration: 2,
                       delay: i * 0.6,
                       repeat: Infinity,
                       ease: "easeOut"

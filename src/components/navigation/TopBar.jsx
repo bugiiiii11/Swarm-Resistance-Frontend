@@ -1,20 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, Menu, X, ChevronDown, LogOut, User, Settings, Copy, Check } from 'lucide-react';
+import { Wallet, Menu, X, ChevronDown, LogOut, User, Settings, Copy, Check, Home } from 'lucide-react'; // Added Home import
 import { useWeb3Auth } from '../../contexts/Web3AuthContext';
 import HologramTransition from '../effects/HologramTransition';
 
-// Updated section navigation items with optimized names
-const sectionItems = [
-  { id: 'home', name: 'Headquarters', href: '#home' },
-  { id: 'ecosystem', name: 'Mission', href: '#ecosystem' },
-  { id: 'metrics', name: 'Intel', href: '#metrics' },
-  { id: 'join', name: 'Recruit', href: '#join' },
-];
-
-// Page navigation items for hamburger menu
+// Page navigation items for hamburger menu - Updated with Home
 const pageItems = [
+  { name: 'Home', path: '/', icon: <Home size={18} />, resetToHome: true }, // Added Home navigation with reset flag
   { name: 'Profile', path: '/profile', icon: <User size={18} /> },
   { name: 'Meda Shooter', path: '/meda-shooter', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -51,6 +44,14 @@ const pageItems = [
       <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1"/>
     </svg>
   )},
+];
+
+// Desktop section navigation items (for desktop top bar only)
+const sectionItems = [
+  { id: 'home', name: 'Headquarters', href: '#home' },
+  { id: 'ecosystem', name: 'Mission', href: '#ecosystem' },
+  { id: 'metrics', name: 'Intel', href: '#metrics' },
+  { id: 'join', name: 'Recruit', href: '#join' },
 ];
 
 const TopBar = () => {
@@ -111,6 +112,31 @@ const TopBar = () => {
     setDropdownOpen(false);
   }, [location.pathname]);
 
+  // Handle Home navigation - always reset to headquarters
+  const handleHomeNavigation = () => {
+    // Reset to home section
+    setActiveSection('home');
+    
+    // Dispatch section change event
+    window.dispatchEvent(new CustomEvent('sectionChange', { 
+      detail: { section: 'home' } 
+    }));
+    
+    // Navigate to homepage
+    navigate('/');
+    
+    // Close mobile menu
+    setMobileMenuOpen(false);
+    
+    // Scroll to top after navigation
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
+  };
+
   // Fetch balance when wallet is connected
   useEffect(() => {
     const fetchBalance = async () => {
@@ -164,14 +190,14 @@ const TopBar = () => {
     return 'Explorer';
   };
 
-  // Handle warp navigation - SIMPLIFIED AND MORE RELIABLE
+  // Handle warp navigation - Desktop only, only for sections on homepage
   const handleWarpNavigation = (sectionId) => {
     // Prevent multiple warp transitions
     if (isWarping) return;
     
     console.log('Starting warp navigation to:', sectionId);
     
-    // Only work on homepage
+    // Only work on homepage for sections
     if (location.pathname !== '/') {
       navigate('/');
       // Add a small delay to ensure navigation completes
@@ -207,7 +233,7 @@ const TopBar = () => {
     }));
   };
 
-  // Handle warp completion - SIMPLIFIED
+  // Handle warp completion
   const handleWarpComplete = () => {
     console.log('Warp transition completed');
     setIsWarping(false);
@@ -260,7 +286,11 @@ const TopBar = () => {
             )}
             
             {/* Logo */}
-            <Link to="/" className="flex items-center">
+            <Link 
+              to="/" 
+              className="flex items-center"
+              onClick={handleHomeNavigation}
+            >
               <motion.img 
                 src="/logo.png" 
                 alt="Swarm Resistance" 
@@ -529,7 +559,7 @@ const TopBar = () => {
           </div>
         </div>
         
-        {/* Mobile Hamburger Menu */}
+        {/* Mobile Hamburger Menu - SIMPLIFIED: Pages Only */}
         <AnimatePresence>
           {mobileMenuOpen && isMobile && (
             <motion.div
@@ -544,37 +574,7 @@ const TopBar = () => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {/* Section Navigation on Mobile */}
-              {location.pathname === '/' && (
-                <div className="border-b border-phoenix-primary/20 pb-3">
-                  <div className="px-4 py-2">
-                    <p className="text-xs font-orbitron font-bold text-phoenix-primary uppercase tracking-wide mb-2">
-                      Sections
-                    </p>
-                  </div>
-                  {sectionItems.map((item) => (
-                    <motion.button
-                      key={item.id}
-                      onClick={() => {
-                        handleWarpNavigation(item.id);
-                        setMobileMenuOpen(false);
-                      }}
-                      disabled={isWarping}
-                      className={`block w-full text-left px-6 py-3 text-lg font-orbitron font-bold transition-all ${
-                        activeSection === item.id
-                          ? 'text-phoenix-primary bg-phoenix-primary/10 border-l-4 border-phoenix-primary' 
-                          : 'text-stellar-white hover:text-phoenix-light hover:bg-phoenix-primary/5'
-                      } ${isWarping ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      whileHover={{ x: isWarping ? 0 : 6 }}
-                      whileTap={{ scale: isWarping ? 1 : 0.98 }}
-                    >
-                      {item.name}
-                    </motion.button>
-                  ))}
-                </div>
-              )}
-              
-              {/* Page Navigation */}
+              {/* Page Navigation Only - No Sections */}
               <div className="py-3">
                 <div className="px-4 py-2">
                   <p className="text-xs font-orbitron font-bold text-resistance-light uppercase tracking-wide mb-2">
@@ -582,19 +582,36 @@ const TopBar = () => {
                   </p>
                 </div>
                 {pageItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className={`flex items-center gap-3 px-6 py-3 text-lg font-medium transition-all ${
-                      location.pathname === item.path
-                        ? 'text-resistance-light bg-resistance-primary/10 border-l-4 border-resistance-light'
-                        : 'text-stellar-white hover:text-resistance-light hover:bg-resistance-primary/5'
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.icon}
-                    {item.name}
-                  </Link>
+                  item.resetToHome ? (
+                    // Special handling for Home navigation
+                    <button
+                      key={item.path}
+                      onClick={handleHomeNavigation}
+                      className={`flex items-center gap-3 px-6 py-3 text-lg font-medium transition-all w-full text-left ${
+                        location.pathname === item.path
+                          ? 'text-resistance-light bg-resistance-primary/10 border-l-4 border-resistance-light'
+                          : 'text-stellar-white hover:text-resistance-light hover:bg-resistance-primary/5'
+                      }`}
+                    >
+                      {item.icon}
+                      {item.name}
+                    </button>
+                  ) : (
+                    // Regular Link navigation
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={`flex items-center gap-3 px-6 py-3 text-lg font-medium transition-all ${
+                        location.pathname === item.path
+                          ? 'text-resistance-light bg-resistance-primary/10 border-l-4 border-resistance-light'
+                          : 'text-stellar-white hover:text-resistance-light hover:bg-resistance-primary/5'
+                      }`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.icon}
+                      {item.name}
+                    </Link>
+                  )
                 ))}
               </div>
               

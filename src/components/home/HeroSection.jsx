@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { useWeb3Auth } from '../../contexts/Web3AuthContext';
 
 // Mobile-optimized Background with Swarm Invasion
@@ -207,6 +208,11 @@ const SwarmInvasionBackground = ({ isMobile }) => {
       ))}
     </div>
   );
+};
+
+// PropTypes validation for SwarmInvasionBackground
+SwarmInvasionBackground.propTypes = {
+  isMobile: PropTypes.bool.isRequired,
 };
 
 const HeroSection = () => {
@@ -484,7 +490,7 @@ const HeroSection = () => {
                 style={{
                   left: '16rem',
                   right: '0',
-                  bottom: '100px', // Optimized positioning
+                  bottom: '100px',
                   top: '120px',
                   display: 'flex',
                   alignItems: 'flex-end',

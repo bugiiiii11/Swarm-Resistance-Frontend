@@ -1,175 +1,447 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Wallet, Gamepad2, Trophy, Zap } from 'lucide-react';
-import FlyingShip from '../effects/FlyingShip';
-import SectionWrapper from '../layout/SectionWrapper';
 
 const OnboardingSteps = () => {
-  // Steps data - updated for new users
-  const steps = [
-    {
-      number: "01",
-      icon: <Wallet size={24} className="text-neon-cyan" />,
-      title: "CONNECT WALLET",
-      description: "Link your Web3 wallet or create one instantly to get started",
-      color: "from-neon-cyan/20 to-transparent"
-    },
-    {
-      number: "02",
-      icon: <Gamepad2 size={24} className="text-meda-gold" />,
-      title: "EXPLORE GAMES",
-      description: "Jump into our 2D shooter or discover Telegram games in our hub",
-      color: "from-meda-gold/20 to-transparent"
-    },
-    {
-      number: "03",
-      icon: <Trophy size={24} className="text-nebula-pink" />,
-      title: "EARN REWARDS",
-      description: "Complete challenges and tournaments to earn Meda Gas and NFTs",
-      color: "from-nebula-pink/20 to-transparent"
-    },
-    {
-      number: "04",
-      icon: <Zap size={24} className="text-energy-green" />,
-      title: "BUILD EMPIRE",
-      description: "Collect NFTs, claim lands, and become a multiverse legend",
-      color: "from-energy-green/20 to-transparent"
-    }
-  ];
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { x: -30, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.5 }
-    }
-  };
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
-    <SectionWrapper
-      title="Join the Resistance"
-      subtitle="Ready to start your fight to save the universe? Here's how to become part of the fight against the Swarm enemies."
-      className="relative overflow-hidden"
-    >
-      <div className="flex-1 flex flex-col justify-center">
-        {/* Flying ships - reduced and positioned higher */}
-        <FlyingShip 
-          delay={0} 
-          speed={10} 
-          yPosition="20%" 
-          size="80px" 
-          direction="ltr"
-          color="#FF3E8A"
+    <div className="min-h-screen w-full relative overflow-hidden">
+      {/* Full-screen background image */}
+      <div className="absolute inset-0 w-full h-full">
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: "url('/resistance2.png')",
+          }}
         />
         
-        <FlyingShip 
-          delay={3000} 
-          speed={12} 
-          yPosition="35%" 
-          size="60px" 
-          direction="rtl"
-          color="#FFB61E"
-        />
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40" />
         
-        {/* Compact Steps Grid */}
-        <motion.div 
-          className="max-w-5xl mx-auto mb-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          <div className="grid md:grid-cols-2 gap-4">
-            {steps.map((step, index) => (
-              <motion.div
-                key={index}
-                className="glassmorphism rounded-lg p-4 hover:border-neon-cyan/30 transition-all duration-300 group"
-                variants={itemVariants}
-                whileHover={{ y: -3 }}
-              >
-                <div className="flex items-center">
-                  {/* Step number */}
-                  <div className="bg-void-black/60 px-3 py-2 rounded-lg border border-cosmic-purple/30 mr-4">
-                    <span className="text-lg font-bold font-jetbrains bg-gradient-to-b from-stellar-white to-gray-400 bg-clip-text text-transparent">
-                      {step.number}
-                    </span>
-                  </div>
-                  
-                  {/* Icon */}
-                  <motion.div 
-                    className="w-10 h-10 mr-3 flex items-center justify-center bg-void-black/50 rounded-lg border border-cosmic-purple/30 group-hover:border-neon-cyan/50 transition-colors"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                  >
-                    {step.icon}
-                  </motion.div>
-                  
-                  {/* Content */}
-                  <div className="flex-1">
-                    <h3 className="text-sm font-bold mb-1 text-stellar-white">
-                      {step.title}
-                    </h3>
-                    <p className="text-gray-300 text-xs">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-                
-                {/* Progress indicator */}
-                <motion.div 
-                  className="h-0.5 bg-gradient-to-r from-transparent via-meda-gold to-transparent mt-3"
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  transition={{ duration: 1, delay: 0.1 * index }}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-        
-        {/* CTA Button */}
-        <div className="text-center mb-6">
-          <motion.button 
-            className="btn-primary-glass text-base px-6 py-3"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Start Your Journey
-          </motion.button>
-        </div>
+        {/* Subtle gradient overlay for atmosphere */}
+        <div className="absolute inset-0 bg-gradient-to-t from-void-primary/60 via-transparent to-void-primary/30" />
+      </div>
 
-                      {/* Bottom section - Key benefits */}
-              <div className="mt-8 grid md:grid-cols-3 gap-6 text-center">
-                <div className="glassmorphism p-4 rounded-lg">
-                  <h4 className="text-energy-green font-bold mb-2">Daily Rewards</h4>
-                  <p className="text-gray-400 text-sm">Login bonuses, mini-games, and tasks provide consistent Meda Gas earnings</p>
-                </div>
-                <div className="glassmorphism p-4 rounded-lg">
-                  <h4 className="text-meda-gold font-bold mb-2">NFT Utility</h4>
-                  <p className="text-gray-400 text-sm">Deploy Heroes and Weapons in Meda Wars for passive Meda Gas generation</p>
-                </div>
-                <div className="glassmorphism p-4 rounded-lg">
-                  <h4 className="text-nebula-pink font-bold mb-2">Token Airdrop</h4>
-                  <p className="text-gray-400 text-sm">Meda Gas accumulation directly determines your future token allocation</p>
-                </div>
+      {/* Animated particles for atmosphere - Reduced on mobile */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none">
+        {[...Array(isMobile ? 8 : 20)].map((_, i) => (
+          <motion.div
+            key={`particle-${i}`}
+            className="absolute rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${1 + Math.random() * 2}px`,
+              height: `${1 + Math.random() * 2}px`,
+              backgroundColor: i % 3 === 0 ? '#FF8C00' : i % 3 === 1 ? '#DC2626' : '#FFFFFF',
+            }}
+            animate={{
+              opacity: [0.2, 0.8, 0.2],
+              scale: [1, 1.5, 1],
+              y: [0, isMobile ? -25 : -50, 0]
+            }}
+            transition={{
+              duration: isMobile ? 6 : 4 + Math.random() * 3,
+              delay: Math.random() * 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+      </div>
+
+      {/* RESPONSIVE Section content */}
+      <div className="relative z-10 min-h-screen w-full">
+        {/* Mobile Layout */}
+        {isMobile ? (
+          <div className="w-full h-full flex flex-col pt-16 pb-24 px-4">
+            {/* Mobile Header */}
+            <motion.div 
+              className="text-center mb-8"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <motion.h2 
+                className="text-2xl sm:text-3xl font-orbitron font-bold text-phoenix-primary mb-4"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                Join the Fight
+              </motion.h2>
+              
+              <motion.p 
+                className="text-sm sm:text-base text-phoenix-light/80 leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                viewport={{ once: true }}
+              >
+                The resistance needs you. Step into the post-apocalyptic world and reclaim our future.
+              </motion.p>
+            </motion.div>
+
+            {/* Mobile Feature Cards - Vertical Stack */}
+            <div className="space-y-4 mb-8 flex-1">
+              {[
+                {
+                  title: "Daily Rewards",
+                  description: "Earn Phoenix Essence daily through missions and activities",
+                  color: "#FF8C00",
+                  icon: "🏆"
+                },
+                {
+                  title: "NFT Utility", 
+                  description: "Deploy your Hero and Weapon NFTs in strategic combat",
+                  color: "#3B82F6",
+                  icon: "⚔️"
+                },
+                {
+                  title: "Token Airdrop",
+                  description: "Prepare for future token airdrops through Guardian ranks", 
+                  color: "#22C55E",
+                  icon: "🚀"
+                }
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  className="p-6 rounded-lg backdrop-blur-md"
+                  style={{
+                    background: 'rgba(15, 15, 35, 0.7)',
+                    border: `2px solid ${feature.color}60`,
+                    boxShadow: `0 0 15px ${feature.color}30`
+                  }}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 + index * 0.2 }}
+                  viewport={{ once: true }}
+                  whileHover={{
+                    y: -4,
+                    boxShadow: `0 0 25px ${feature.color}50`
+                  }}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div 
+                      className="w-12 h-12 rounded-lg flex items-center justify-center text-xl"
+                      style={{ backgroundColor: `${feature.color}20` }}
+                    >
+                      {feature.icon}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-orbitron font-bold mb-2"
+                          style={{ color: feature.color }}>
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Mobile CTA Button */}
+            <motion.div
+              className="mt-auto"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1 }}
+              viewport={{ once: true }}
+            >
+              <motion.button 
+                className="w-full relative text-lg font-orbitron font-bold rounded-lg overflow-hidden py-4 px-6"
+                style={{
+                  background: 'rgba(30, 58, 138, 0.9)',
+                  border: '2px solid rgba(59, 130, 246, 0.8)',
+                  color: '#FFFFFF',
+                  boxShadow: '0 0 20px rgba(59, 130, 246, 0.6), inset 0 0 20px rgba(59, 130, 246, 0.1)'
+                }}
+                whileHover={{ 
+                  scale: 1.02,
+                  boxShadow: "0 0 30px rgba(59, 130, 246, 0.8), inset 0 0 30px rgba(59, 130, 246, 0.15)",
+                  borderColor: "rgba(96, 165, 250, 1)"
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {/* Shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-lg"
+                  animate={{
+                    x: ['-100%', '100%']
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                />
+                
+                {/* Button text */}
+                <span 
+                  className="relative z-10"
+                  style={{
+                    textShadow: '0 0 10px rgba(255, 255, 255, 0.8)'
+                  }}
+                >
+                  JOIN THE RESISTANCE
+                </span>
+              </motion.button>
+            </motion.div>
+
+            {/* Mobile Copyright */}
+            <motion.div 
+              className="text-center mt-6"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 1.2 }}
+              viewport={{ once: true }}
+            >
+              <p className="text-phoenix-primary/60 text-xs font-orbitron">
+                ©2025 Swarm Resistance, All Rights Reserved
+              </p>
+            </motion.div>
+          </div>
+        ) : (
+          /* Desktop Layout - Original */
+          <div className="pt-16 md:pl-64">
+            <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col">
+              
+              {/* Title and subtitle section */}
+              <motion.div 
+                className="text-center mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <motion.h2 
+                  className="text-4xl md:text-5xl font-orbitron font-bold text-center mb-3 text-phoenix-primary relative inline-block"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.2 }}
+                  viewport={{ once: true }}
+                >
+                  Join the Fight
+                </motion.h2>
+                
+                <motion.p 
+                  className="mt-2 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed text-phoenix-light/80"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  The resistance needs you. Step into the post-apocalyptic world and reclaim our future.
+                </motion.p>
+              </motion.div>
+
+              {/* Main content area - centered */}
+              <div className="flex-1 flex flex-col justify-center items-center">
+                <motion.div
+                  className="text-center"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  {/* Featured content section */}
+                  <div className="grid md:grid-cols-3 gap-8 mb-12">
+                    
+                    {/* Daily Rewards */}
+                    <motion.div
+                      className="text-center p-6 rounded-lg backdrop-blur-md"
+                      style={{
+                        background: 'rgba(15, 15, 35, 0.6)',
+                        border: '2px solid rgba(255, 140, 0, 0.3)',
+                        boxShadow: '0 0 20px rgba(255, 140, 0, 0.2)'
+                      }}
+                      whileHover={{
+                        y: -8,
+                        boxShadow: '0 0 30px rgba(255, 140, 0, 0.4)'
+                      }}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.4 }}
+                      viewport={{ once: true }}
+                    >
+                      <h3 className="text-xl font-orbitron font-bold text-phoenix-primary mb-2">
+                        Daily Rewards
+                      </h3>
+                      <p className="text-gray-300 text-sm">
+                        Earn Phoenix Essence daily through missions and activities
+                      </p>
+                    </motion.div>
+
+                    {/* NFT Utility */}
+                    <motion.div
+                      className="text-center p-6 rounded-lg backdrop-blur-md"
+                      style={{
+                        background: 'rgba(15, 15, 35, 0.6)',
+                        border: '2px solid rgba(59, 130, 246, 0.3)',
+                        boxShadow: '0 0 20px rgba(59, 130, 246, 0.2)'
+                      }}
+                      whileHover={{
+                        y: -8,
+                        boxShadow: '0 0 30px rgba(59, 130, 246, 0.4)'
+                      }}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.6 }}
+                      viewport={{ once: true }}
+                    >
+                      <h3 className="text-xl font-orbitron font-bold text-resistance-light mb-2">
+                        NFT Utility
+                      </h3>
+                      <p className="text-gray-300 text-sm">
+                        Deploy your Hero and Weapon NFTs in strategic combat
+                      </p>
+                    </motion.div>
+
+                    {/* Token Airdrop */}
+                    <motion.div
+                      className="text-center p-6 rounded-lg backdrop-blur-md"
+                      style={{
+                        background: 'rgba(15, 15, 35, 0.6)',
+                        border: '2px solid rgba(34, 197, 94, 0.3)',
+                        boxShadow: '0 0 20px rgba(34, 197, 94, 0.2)'
+                      }}
+                      whileHover={{
+                        y: -8,
+                        boxShadow: '0 0 30px rgba(34, 197, 94, 0.4)'
+                      }}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.8 }}
+                      viewport={{ once: true }}
+                    >
+                      <h3 className="text-xl font-orbitron font-bold text-energy-green mb-2">
+                        Token Airdrop
+                      </h3>
+                      <p className="text-gray-300 text-sm">
+                        Prepare for future token airdrops through Guardian ranks
+                      </p>
+                    </motion.div>
+                  </div>
+
+                  {/* Call to action - Blue JOIN THE RESISTANCE button */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 1 }}
+                    viewport={{ once: true }}
+                  >
+                    <motion.button 
+                      className="relative text-2xl font-orbitron font-bold rounded-lg overflow-hidden"
+                      style={{
+                        padding: '2rem 4rem',
+                        minWidth: '300px',
+                        background: 'rgba(30, 58, 138, 0.9)',
+                        border: '2px solid rgba(59, 130, 246, 0.8)',
+                        color: '#FFFFFF',
+                        boxShadow: '0 0 20px rgba(59, 130, 246, 0.6), inset 0 0 20px rgba(59, 130, 246, 0.1)'
+                      }}
+                      whileHover={{ 
+                        scale: 1.05,
+                        boxShadow: "0 0 30px rgba(59, 130, 246, 0.8), inset 0 0 30px rgba(59, 130, 246, 0.15)",
+                        borderColor: "rgba(96, 165, 250, 1)"
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {/* Shimmer effect */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-lg"
+                        animate={{
+                          x: ['-100%', '100%']
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                        style={{
+                          clipPath: 'inset(0)'
+                        }}
+                      />
+                      
+                      {/* Button text */}
+                      <span 
+                        className="relative z-10"
+                        style={{
+                          textShadow: '0 0 10px rgba(255, 255, 255, 0.8)'
+                        }}
+                      >
+                        JOIN THE RESISTANCE
+                      </span>
+                      
+                      {/* Blue corner indicators */}
+                      <motion.div
+                        className="absolute top-2 left-2 w-2 h-2 rounded-full"
+                        style={{
+                          backgroundColor: '#60A5FA',
+                          boxShadow: '0 0 8px rgba(96, 165, 250, 0.8)'
+                        }}
+                        animate={{
+                          opacity: [0.5, 1, 0.5],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
+                      
+                      <motion.div
+                        className="absolute bottom-2 right-2 w-2 h-2 rounded-full"
+                        style={{
+                          backgroundColor: '#60A5FA',
+                          boxShadow: '0 0 8px rgba(96, 165, 250, 0.8)'
+                        }}
+                        animate={{
+                          opacity: [0.5, 1, 0.5],
+                        }}
+                        transition={{
+                          duration: 2,
+                          delay: 1,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
+                    </motion.button>
+                  </motion.div>
+                </motion.div>
               </div>
 
-        {/* Footer text */}
-        <div className="text-center mt-6">
-          <p className="text-xs text-gray-400">©2025 Swarm Resistance. Built by the players, for the players.</p>
-        </div>
+              {/* Copyright notice positioned 80px from bottom */}
+              <motion.div 
+                className="absolute bottom-24 left-0 right-0 text-center z-20"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 1.2 }}
+                viewport={{ once: true }}
+              >
+                <div className="md:pl-64"> {/* Account for sidebar on desktop */}
+                  <p className="text-phoenix-primary/60 text-sm font-orbitron">
+                    ©2025 Swarm Resistance, All Rights Reserved
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
       </div>
-    </SectionWrapper>
+    </div>
   );
 };
 
