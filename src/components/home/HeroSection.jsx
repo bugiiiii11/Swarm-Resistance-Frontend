@@ -314,20 +314,25 @@ const HeroSection = () => {
       <div className="relative z-10 min-h-screen w-full">
         {/* Mobile Layout */}
         {isMobile ? (
-          <div className="w-full h-full flex flex-col pt-16 pb-24 px-4">
-            {/* Mobile Hero Title */}
-            <motion.div
-              className="text-center mb-8 flex-1 flex flex-col justify-center"
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
+          <div className="w-full h-full flex flex-col pt-24 pb-24 px-4">
+            {/* Mobile Header */}
+            <motion.div 
+              className="text-center mb-10"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
             >
               <motion.h1 
-                className="text-3xl sm:text-4xl font-orbitron font-black text-stellar-white mb-6 leading-tight"
+                className="text-3xl sm:text-4xl font-orbitron font-black text-stellar-white mb-8"
                 style={{
                   textShadow: '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 140, 0, 0.6)',
                   letterSpacing: '0.03em'
                 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.2 }}
+                viewport={{ once: true }}
                 animate={{
                   textShadow: [
                     '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 140, 0, 0.6)',
@@ -335,33 +340,24 @@ const HeroSection = () => {
                     '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 140, 0, 0.6)'
                   ]
                 }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
               >
                 JOIN THE RESISTANCE
               </motion.h1>
               
               {/* Mobile subtitle */}
-              <motion.p
-                className="text-sm sm:text-base text-phoenix-light/80 leading-relaxed mb-8 max-w-sm mx-auto"
+              <motion.p 
+                className="text-sm sm:text-base text-phoenix-light/80 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                viewport={{ once: true }}
               >
-                The resistance needs heroes. Join the fight against the Swarm invasion.
+                The time of hiding is over—the Guardians rise to fulfill an ancient prophecy. Armed with crystallized memories of fallen heroes and weapons forged from Phoenix Essence, you will command territories across the galaxy in our greatest war. Stand with the resistance.
               </motion.p>
             </motion.div>
 
             {/* Mobile Action Buttons - Vertical Stack */}
-            <motion.div
-              className="space-y-4"
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 1, delay: 1 }}
-            >
+            <div className="space-y-4">
               {/* Mobile CONNECT & BEGIN Button */}
               <motion.button 
                 className="w-full relative text-lg font-orbitron font-bold rounded-lg overflow-hidden py-4 px-6"
@@ -375,6 +371,10 @@ const HeroSection = () => {
                 }}
                 onClick={handleConnectWallet}
                 disabled={isLoading}
+                initial={{ y: 30, opacity: 0 }}
+                whileInView={{ y: 0, opacity: isLoading ? 0.5 : 1 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                viewport={{ once: true }}
                 whileHover={{ 
                   scale: isLoading ? 1 : 1.02,
                   boxShadow: isLoading ? undefined : "0 0 25px rgba(34, 197, 94, 0.8), inset 0 0 20px rgba(34, 197, 94, 0.15)"
@@ -400,7 +400,7 @@ const HeroSection = () => {
                     textShadow: '0 0 8px rgba(74, 222, 128, 0.8)'
                   }}
                 >
-                  {isLoading ? 'INITIALIZING...' : 'CONNECT & BEGIN'}
+                  {isLoading ? 'INITIALIZING...' : 'CONNECT WALLET & BEGIN'}
                 </span>
               </motion.button>
               
@@ -415,6 +415,10 @@ const HeroSection = () => {
                   minHeight: '56px'
                 }}
                 onClick={handleJoinResistance}
+                initial={{ y: 30, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
                 whileHover={{ 
                   scale: 1.02,
                   boxShadow: "0 0 25px rgba(59, 130, 246, 0.8), inset 0 0 25px rgba(59, 130, 246, 0.15)",
@@ -444,7 +448,7 @@ const HeroSection = () => {
                   JOIN THE RESISTANCE
                 </span>
               </motion.button>
-            </motion.div>
+            </div>
 
             {/* Mobile character/atmosphere elements */}
             <div className="absolute inset-0 pointer-events-none opacity-30">
@@ -805,7 +809,7 @@ const HeroSection = () => {
                           textShadow: '0 0 10px rgba(74, 222, 128, 0.8)'
                         }}
                       >
-                        {isLoading ? 'INITIALIZING...' : 'CONNECT & BEGIN'}
+                        {isLoading ? 'INITIALIZING...' : 'CONNECT WALLET & BEGIN'}
                       </span>
                       
                       {/* Desktop corner indicators */}

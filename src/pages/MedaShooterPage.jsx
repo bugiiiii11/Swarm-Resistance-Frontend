@@ -415,6 +415,18 @@ const MedaShooterPage = () => {
                 </div>
               </div>
             </motion.div>
+            {/* Bottom space */}
+            <motion.div 
+              className="text-center py-8"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <p className="text-phoenix-primary/60 text-sm font-orbitron">
+              Unite Against Extinction
+              </p>
+            </motion.div>
           </div>
         </div>
       </div>

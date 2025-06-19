@@ -184,18 +184,17 @@ const CommunityMetrics = () => {
       <div className="relative z-10 w-full h-full">
         {/* Mobile Layout */}
         {isMobile ? (
-          <div className="w-full h-full flex flex-col pt-16 pb-24 px-4">
+          <div className="w-full h-full flex flex-col pt-24 pb-24 px-4">
             {/* Mobile Header */}
             <motion.div 
-              className="text-center mb-6"
-              style={{ height: `${heights.headerHeight}px` }}
+              className="text-center mb-10"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
               <motion.h2 
-                className="text-2xl sm:text-3xl font-orbitron font-bold text-phoenix-primary mb-4"
+                className="text-2xl sm:text-3xl font-orbitron font-bold text-phoenix-primary mb-8"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 0.2 }}
@@ -211,12 +210,12 @@ const CommunityMetrics = () => {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 viewport={{ once: true }}
               >
-                Real-time intelligence from our resistance operations
+                The AI Commander sensors pulse with incoming battlefield data as the resistance network expands. Live intelligence reports show Hero Artifacts resonating with Meda energy, legendary weapons charging with Phoenix Essence, and liberated lands sending signals of successful defense operations.
               </motion.p>
             </motion.div>
 
             {/* Mobile Metrics Cards - Vertical Stack */}
-            <div ref={sectionRef} className="space-y-4 flex-1">
+            <div ref={sectionRef} className="space-y-4">
               {metricsData.map((metric, index) => (
                 <motion.div
                   key={index}
@@ -346,13 +345,13 @@ const CommunityMetrics = () => {
                 </motion.h2>
                 
                 <motion.p 
-                  className="mt-2 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed text-phoenix-light/80"
+                  className="mt-2 text-lg md:text-xl max-w-6xl mx-auto leading-relaxed text-phoenix-light/80"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
                   viewport={{ once: true }}
                 >
-                  Real-time intelligence from our resistance operations
+                  The AI Commander sensors pulse with incoming battlefield data as the resistance network expands. Live intelligence reports show Hero Artifacts resonating with Meda energy, legendary weapons charging with Phoenix Essence, and liberated lands sending signals of successful defense operations. 
                 </motion.p>
               </motion.div>
 
@@ -411,7 +410,7 @@ const CommunityMetrics = () => {
                         backgroundImage: "url('/buildings/city-horizon.png')",
                         backgroundSize: "cover",
                         backgroundPosition: "center center", // Changed to center to show full image
-                        height: '500px', // Exact image height
+                        height: '520px', // Exact image height
                         minHeight: '400px' // Ensure minimum 400px
                       }}
                     />

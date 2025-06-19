@@ -25,10 +25,10 @@ const OnboardingSteps = () => {
     return {
       sectionHeight: viewportHeight,
       contentHeight: availableHeight,
-      headerHeight: Math.min(140, availableHeight * 0.18), // Reduced to match CommunityMetrics
-      journeyHeight: Math.min(240, availableHeight * 0.38), // Reduced for mobile to save space
-      featuresHeight: Math.min(180, availableHeight * 0.28), // Increased for mobile visibility
-      copyrightHeight: 80 // Increased for proper spacing from bottom
+      headerHeight: Math.min(140, availableHeight * 0.18), // Back to original
+      journeyHeight: Math.min(240, availableHeight * 0.38), // Back to original  
+      featuresHeight: Math.min(180, availableHeight * 0.28), // Back to original
+      copyrightHeight: 80 // Back to original
     };
   };
 
@@ -87,18 +87,17 @@ const OnboardingSteps = () => {
       <div className="relative z-10 w-full h-full">
         {/* Mobile Layout */}
         {isMobile ? (
-          <div className="w-full h-full flex flex-col pt-16 pb-6 px-4">
-            {/* Mobile Header - Match CommunityMetrics compact style */}
+          <div className="w-full h-full flex flex-col pt-24 pb-24 px-4">
+            {/* Mobile Header - Back to original */}
             <motion.div 
-              className="text-center"
-              style={{ height: `${heights.headerHeight}px` }}
+              className="text-center mb-10"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
               <motion.h2 
-                className="text-2xl sm:text-3xl font-orbitron font-bold text-center mb-3 text-phoenix-primary relative inline-block"
+                className="text-2xl sm:text-3xl font-orbitron font-bold text-phoenix-primary mb-8"
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 0.2 }}
@@ -108,88 +107,18 @@ const OnboardingSteps = () => {
               </motion.h2>
               
               <motion.p 
-                className="mt-2 text-sm sm:text-base max-w-xs mx-auto leading-relaxed text-phoenix-light/80 px-2"
+                className="text-sm sm:text-base text-phoenix-light/80 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
                 viewport={{ once: true }}
               >
-                The Swarm threatens humanity's existence. Join the elite resistance forces and fight for survival.
+                We need every hero, every weapon, every strategic mind to reclaim what the Swarm has stolen. Connect your Web3 identity, deploy your NFT arsenal in tactical combat, and earn Phoenix Essence through victory. The resistance grows stronger with each Guardian who answers the call.
               </motion.p>
             </motion.div>
 
-            {/* Mobile Resistance Journey - Closer to subtitle with consistent spacing */}
-            <motion.div 
-              className="flex flex-col justify-start px-4 space-y-3 pt-2"
-              style={{ height: `${heights.journeyHeight}px` }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 1.5 }}
-            >
-              {[
-                {
-                  step: "[1] CONNECT WALLET",
-                  description: "Join the resistance with your Web3 identity",
-                  image: "/portal-city.png",
-                  color: "#3B82F6"
-                },
-                {
-                  step: "[2] JOIN THE FIGHT", 
-                  description: "Deploy NFTs, play games, complete missions",
-                  image: "/telegram-city.png",
-                  color: "#FF8C00"
-                },
-                {
-                  step: "[3] EARN REWARDS",
-                  description: "Accumulate Phoenix Essence for token airdrops", 
-                  image: "/polygon-planet.png",
-                  color: "#22C55E"
-                }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="flex items-center space-x-3 glass-void rounded-lg p-3"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                  viewport={{ once: true }}
-                >
-                  <div 
-                    className="w-12 h-16 rounded-lg overflow-hidden flex-shrink-0"
-                    style={{
-                      border: `2px solid ${item.color}80`,
-                      boxShadow: `0 0 10px ${item.color}40`
-                    }}
-                  >
-                    <img 
-                      src={item.image}
-                      alt={item.step}
-                      className="w-full h-full object-contain object-bottom"
-                      style={{ filter: `drop-shadow(0 0 6px ${item.color}40)` }}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-orbitron font-bold text-stellar-white mb-1">
-                      {item.step}
-                    </h4>
-                    <p className="text-neutral-light text-xs leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Mobile Feature Cards - All 3 now visible */}
-            <motion.div 
-              className="space-y-4 px-4"
-              style={{ height: `${heights.featuresHeight}px` }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
+            {/* Mobile Feature Cards - Positioned lower */}
+            <div className="space-y-4 mb-6 mt-auto pt-16"> {/* Added pt-16 to push cards down more */}
               {[
                 {
                   title: "Daily Rewards",
@@ -246,12 +175,11 @@ const OnboardingSteps = () => {
                   </div>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
 
-            {/* Mobile Copyright - Moved up from bottom */}
+            {/* Mobile Copyright - Above nav menu */}
             <motion.div 
-              className="text-center flex items-start justify-center pt-4"
-              style={{ height: `${heights.copyrightHeight}px` }}
+              className="text-center mb-10" // Added mb-10 to clear nav menu
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 1, delay: 1.2 }}
@@ -263,14 +191,14 @@ const OnboardingSteps = () => {
             </motion.div>
           </div>
         ) : (
-          /* Desktop Layout - Redesigned */
+          /* Desktop Layout - Back to original structure with small adjustments */
           <div className="pt-6 md:pl-64 h-full">
             <div 
               className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col"
               style={{ height: `${heights.contentHeight}px` }}
             >
               
-              {/* Header section - Match CommunityMetrics compact style */}
+              {/* Header section - Back to original match CommunityMetrics compact style */}
               <motion.div 
                 className="text-center"
                 style={{ height: `${heights.headerHeight}px` }}
@@ -290,86 +218,22 @@ const OnboardingSteps = () => {
                 </motion.h2>
                 
                 <motion.p 
-                  className="mt-2 text-lg md:text-xl max-w-4xl mx-auto leading-relaxed text-phoenix-light/80"
+                  className="mt-2 text-lg md:text-xl max-w-6xl mx-auto leading-relaxed text-phoenix-light/80"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
                   viewport={{ once: true }}
                 >
-                  The Swarm threatens humanity's existence. Join the elite resistance forces, deploy cutting-edge technology, and fight for the survival of our species. Your courage will determine our future.
+                  We need every hero, every weapon, every strategic mind to reclaim what the Swarm has stolen. Connect your Web3 identity, deploy your NFT arsenal in tactical combat, and earn Phoenix Essence through victory. The resistance grows stronger with each Guardian who answers the call.
                 </motion.p>
               </motion.div>
 
-              {/* Resistance Journey Section - Removed container, direct elements */}
-              <motion.div 
-                className="flex-1 flex flex-col justify-center px-8 space-y-6"
-                style={{ height: `${heights.journeyHeight}px` }}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 1.5 }}
-              >
-                {[
-                  {
-                    step: "[1] CONNECT WALLET",
-                    description: "Join the resistance with your Web3 identity and secure communication channels",
-                    image: "/portal-city.png",
-                    color: "#3B82F6"
-                  },
-                  {
-                    step: "[2] JOIN THE FIGHT", 
-                    description: "Deploy your NFT arsenal, engage in tactical missions, and earn combat rewards",
-                    image: "/telegram-city.png",
-                    color: "#FF8C00"
-                  },
-                  {
-                    step: "[3] EARN REWARDS",
-                    description: "Accumulate Phoenix Essence and qualify for exclusive token airdrops", 
-                    image: "/polygon-planet.png",
-                    color: "#22C55E"
-                  }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    className="flex items-center space-x-6 glass-void rounded-xl p-4 max-w-2xl mx-auto"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                    whileHover={{
-                      x: 4,
-                      boxShadow: `0 0 20px ${item.color}40`
-                    }}
-                  >
-                    <div 
-                      className="w-16 h-24 rounded-lg overflow-hidden flex-shrink-0"
-                      style={{
-                        border: `2px solid ${item.color}80`,
-                        boxShadow: `0 0 15px ${item.color}40`
-                      }}
-                    >
-                      <img 
-                        src={item.image}
-                        alt={item.step}
-                        className="w-full h-full object-contain object-bottom"
-                        style={{ filter: `drop-shadow(0 0 8px ${item.color}40)` }}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg md:text-xl font-orbitron font-bold text-stellar-white mb-2">
-                        {item.step}
-                      </h4>
-                      <p className="text-neutral-light text-sm md:text-base leading-relaxed">
-                        {item.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
+              {/* Spacer to push cards to bottom */}
+              <div className="flex-1"></div>
 
-              {/* Feature Cards - Closer to copyright with consistent spacing */}
+              {/* Feature Cards - At bottom above copyright */}
               <motion.div 
-                className="w-full mb-3"
+                className="w-full mb-1" // Added more margin above copyright
                 style={{ height: `${heights.featuresHeight}px` }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -454,9 +318,9 @@ const OnboardingSteps = () => {
                 </div>
               </motion.div>
 
-              {/* Copyright notice - Moved up from bottom */}
+              {/* Copyright notice - At bottom with more space above */}
               <motion.div 
-                className="text-center flex items-start justify-center pt-4"
+                className="text-center pb-6"
                 style={{ height: `${heights.copyrightHeight}px` }}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
