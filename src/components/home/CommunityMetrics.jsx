@@ -17,7 +17,7 @@ const metricsData = [
   },
   {
     icon: <Shield size={24} className="text-meda-gold" />,
-    title: "UPGRADABLE WEAPONS",
+    title: "LEGENDARY WEAPONS",
     value: 0,
     target: 10350,
     description: "Legendary warriors with specialized combat abilities and battle histories",
@@ -39,7 +39,7 @@ const metricsData = [
   },
   {
     icon: <Zap size={24} className="text-energy-green" />,
-    title: "MEDA GAS OUT (Mil)",
+    title: "MEDA GAS RELEASED (Mil)",
     value: 0,
     target: 150,
     description: "Critical energy resources powering the resistance war machine",

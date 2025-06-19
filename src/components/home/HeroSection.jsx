@@ -341,7 +341,7 @@ const HeroSection = () => {
                   ease: "easeInOut"
                 }}
               >
-                GUARDIANS RISE
+                JOIN THE RESISTANCE
               </motion.h1>
               
               {/* Mobile subtitle */}
@@ -755,7 +755,7 @@ const HeroSection = () => {
                         ease: "easeInOut"
                       }}
                     >
-                      GUARDIANS RISE
+                      JOIN THE RESISTANCE
                     </motion.h1>
                   </motion.div>
                   
