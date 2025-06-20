@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Zap, Edit2, Save, X, Calendar, Award, Shield, Clock, TrendingUp, Sword, MapPin, RefreshCw, Copy, Check } from 'lucide-react';
+import { Trophy, Zap, Edit2, Save, X, Calendar, Shield, Sword, MapPin, RefreshCw, Copy, Check, Wallet } from 'lucide-react';
 import { useWeb3Auth } from '../contexts/Web3AuthContext';
 import { RANKS } from '../services/userProfile.service';
 
@@ -15,7 +15,9 @@ const ProfilePage = () => {
     refreshMedaGasBalance,
     nftHoldings,
     isLoadingNFTs,
-    refreshNFTHoldings
+    refreshNFTHoldings,
+    login,
+    isLoading
   } = useWeb3Auth();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('heroes');
@@ -152,12 +154,47 @@ const ProfilePage = () => {
               <Shield size={64} className="text-meda-gold mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-stellar-white mb-4">Access Restricted</h2>
               <p className="text-gray-400 mb-6">Connect your wallet to access your resistance profile and join the fight against the Swarm.</p>
+              {/* Connect Wallet Button - Same style as TopBar */}
               <motion.button 
-                className="btn-primary-glass"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                onClick={login}
+                disabled={isLoading}
+                className="flex items-center justify-center space-x-2 relative font-orbitron font-bold rounded-lg overflow-hidden px-6 py-3 text-lg w-full"
+                style={{
+                  background: 'linear-gradient(45deg, rgba(15, 35, 15, 0.95), rgba(34, 197, 94, 0.9))',
+                  border: '2px solid rgba(34, 197, 94, 0.9)',
+                  color: '#FFFFFF',
+                  boxShadow: '0 0 20px rgba(34, 197, 94, 0.6), inset 0 0 15px rgba(34, 197, 94, 0.1)',
+                  opacity: isLoading ? 0.5 : 1
+                }}
+                whileHover={{ 
+                  scale: isLoading ? 1 : 1.05,
+                  boxShadow: isLoading ? undefined : "0 0 30px rgba(34, 197, 94, 0.8), inset 0 0 20px rgba(34, 197, 94, 0.15)"
+                }}
+                whileTap={{ scale: isLoading ? 1 : 0.95 }}
               >
-                Connect Wallet
+                {/* Green shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent rounded-lg"
+                  animate={{
+                    x: ['-100%', '100%']
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                />
+                
+                <Wallet size={20} className="relative z-10" />
+                
+                <span 
+                  className="font-bold relative z-10"
+                  style={{
+                    textShadow: '0 0 10px rgba(74, 222, 128, 0.8)'
+                  }}
+                >
+                  {isLoading ? 'Connecting...' : 'Connect Wallet'}
+                </span>
               </motion.button>
             </motion.div>
           </div>
@@ -835,115 +872,115 @@ const ProfilePage = () => {
                   ) : nftData.heroes.length > 0 ? (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {nftData.heroes.map((hero) => {
-  const heroKey = hero.id || hero.tokenId;
-  const hasImageError = imageErrors.has(heroKey);
-  const shouldShowImage = hero.image && !hasImageError;
-  
-  // Use the cardTypeSznId from the NFT service (already fetched from blockchain)
-  const cardTypeSznId = hero.cardTypeSznId || 'Unknown';
-  const heroRarity = hero.cardTypeSznId ? getHeroRarityFromCardType(hero.cardTypeSznId) : 'Unknown';
-  
-  const totalPower = hero.attributes 
-    ? hero.attributes.security + hero.attributes.anonymity + hero.attributes.innovation
-    : hero.power || 0;
-  
-  return (
-    <motion.div
-      key={heroKey}
-      className="bg-space-blue/30 rounded-xl border border-cosmic-purple/30 overflow-hidden"
-      whileHover={{ scale: 1.02, borderColor: 'rgba(255, 182, 30, 0.5)' }}
-    >
-      {/* Hero Image - Full Display */}
-      <div className="aspect-[637/1000] bg-gradient-to-br from-cosmic-purple to-space-blue flex items-center justify-center overflow-hidden">
-        {shouldShowImage ? (
-          <img 
-            src={hero.image} 
-            alt={`Hero ${hero.tokenId}`}
-            className="w-full h-full object-contain"
-            onError={() => handleImageError(heroKey)}
-          />
-        ) : (
-          <Shield size={48} className="text-meda-gold" />
-        )}
-      </div>
-      
-      {/* Hero Info Below Image */}
-      <div className="p-4 space-y-4">
-        
-        {/* Power - Same style as weapons (WITH ICON) */}
-        <div className="text-center mb-4">
-          <motion.div 
-            className="inline-flex items-center gap-2 glassmorphism px-6 py-3 rounded-xl border border-energy-green/40"
-            whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(34, 197, 94, 0.4)' }}
-          >
-            <Zap size={20} className="text-energy-green" />
-            <span className="text-2xl font-bold text-energy-green font-orbitron">
-              Power {totalPower}
-            </span>
-          </motion.div>
-        </div>
-        
-        {/* Attributes - Enhanced with label and better spacing */}
-        {hero.attributes && (
-          <div className="mb-4">
-            <div className="text-center mb-3">
-              <span className="text-sm font-medium text-gray-300 uppercase tracking-wider">
-                Attributes
-              </span>
-            </div>
-            <div className="flex justify-center gap-2">
-              <motion.div 
-                className="relative glassmorphism px-4 py-3 rounded-lg border border-blue-400/30 text-center min-w-[60px]"
-                whileHover={{ scale: 1.05, borderColor: 'rgba(96, 165, 250, 0.6)' }}
-                title="Security"
-              >
-                <div className="text-xl font-bold text-blue-400">{hero.attributes.security}</div>
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full opacity-60"></div>
-                </div>
-              </motion.div>
-              <motion.div 
-                className="relative glassmorphism px-4 py-3 rounded-lg border border-purple-400/30 text-center min-w-[60px]"
-                whileHover={{ scale: 1.05, borderColor: 'rgba(167, 139, 250, 0.6)' }}
-                title="Anonymity"
-              >
-                <div className="text-xl font-bold text-purple-400">{hero.attributes.anonymity}</div>
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full opacity-60"></div>
-                </div>
-              </motion.div>
-              <motion.div 
-                className="relative glassmorphism px-4 py-3 rounded-lg border border-cyan-400/30 text-center min-w-[60px]"
-                whileHover={{ scale: 1.05, borderColor: 'rgba(34, 211, 238, 0.6)' }}
-                title="Innovation"
-              >
-                <div className="text-xl font-bold text-cyan-400">{hero.attributes.innovation}</div>
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                  <div className="w-2 h-2 bg-cyan-400 rounded-full opacity-60"></div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        )}
-        
-        {/* Bottom Row - Enhanced with better spacing and styling (NO CARD TYPE) */}
-        <div className="flex justify-between items-center">
-          <motion.span 
-            className={`text-sm px-3 py-1.5 rounded-full border font-medium ${getRarityColor(heroRarity)}`}
-            whileHover={{ scale: 1.05 }}
-          >
-            {heroRarity}
-          </motion.span>
-          <div className="text-right">
-            <span className="text-sm text-gray-400 font-mono">
-              Token ID #{hero.tokenId}
-            </span>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-})}
+                      const heroKey = hero.id || hero.tokenId;
+                      const hasImageError = imageErrors.has(heroKey);
+                      const shouldShowImage = hero.image && !hasImageError;
+                      
+                      // Use the cardTypeSznId from the NFT service (already fetched from blockchain)
+                      const cardTypeSznId = hero.cardTypeSznId || 'Unknown';
+                      const heroRarity = hero.cardTypeSznId ? getHeroRarityFromCardType(hero.cardTypeSznId) : 'Unknown';
+                      
+                      const totalPower = hero.attributes 
+                        ? hero.attributes.security + hero.attributes.anonymity + hero.attributes.innovation
+                        : hero.power || 0;
+                      
+                      return (
+                        <motion.div
+                          key={heroKey}
+                          className="bg-space-blue/30 rounded-xl border border-cosmic-purple/30 overflow-hidden"
+                          whileHover={{ scale: 1.02, borderColor: 'rgba(255, 182, 30, 0.5)' }}
+                        >
+                          {/* Hero Image - Full Display */}
+                          <div className="aspect-[637/1000] bg-gradient-to-br from-cosmic-purple to-space-blue flex items-center justify-center overflow-hidden">
+                            {shouldShowImage ? (
+                              <img 
+                                src={hero.image} 
+                                alt={`Hero ${hero.tokenId}`}
+                                className="w-full h-full object-contain"
+                                onError={() => handleImageError(heroKey)}
+                              />
+                            ) : (
+                              <Shield size={48} className="text-meda-gold" />
+                            )}
+                          </div>
+                          
+                          {/* Hero Info Below Image */}
+                          <div className="p-4 space-y-4">
+                            
+                            {/* Power - Same style as weapons (WITH ICON) */}
+                            <div className="text-center mb-4">
+                              <motion.div 
+                                className="inline-flex items-center gap-2 glassmorphism px-6 py-3 rounded-xl border border-energy-green/40"
+                                whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(34, 197, 94, 0.4)' }}
+                              >
+                                <Zap size={20} className="text-energy-green" />
+                                <span className="text-2xl font-bold text-energy-green font-orbitron">
+                                  Power {totalPower}
+                                </span>
+                              </motion.div>
+                            </div>
+                            
+                            {/* Attributes - Enhanced with label and better spacing */}
+                            {hero.attributes && (
+                              <div className="mb-4">
+                                <div className="text-center mb-3">
+                                  <span className="text-sm font-medium text-gray-300 uppercase tracking-wider">
+                                    Attributes
+                                  </span>
+                                </div>
+                                <div className="flex justify-center gap-2">
+                                  <motion.div 
+                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-blue-400/30 text-center min-w-[60px]"
+                                    whileHover={{ scale: 1.05, borderColor: 'rgba(96, 165, 250, 0.6)' }}
+                                    title="Security"
+                                  >
+                                    <div className="text-xl font-bold text-blue-400">{hero.attributes.security}</div>
+                                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                                      <div className="w-2 h-2 bg-blue-400 rounded-full opacity-60"></div>
+                                    </div>
+                                  </motion.div>
+                                  <motion.div 
+                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-purple-400/30 text-center min-w-[60px]"
+                                    whileHover={{ scale: 1.05, borderColor: 'rgba(167, 139, 250, 0.6)' }}
+                                    title="Anonymity"
+                                  >
+                                    <div className="text-xl font-bold text-purple-400">{hero.attributes.anonymity}</div>
+                                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                                      <div className="w-2 h-2 bg-purple-400 rounded-full opacity-60"></div>
+                                    </div>
+                                  </motion.div>
+                                  <motion.div 
+                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-cyan-400/30 text-center min-w-[60px]"
+                                    whileHover={{ scale: 1.05, borderColor: 'rgba(34, 211, 238, 0.6)' }}
+                                    title="Innovation"
+                                  >
+                                    <div className="text-xl font-bold text-cyan-400">{hero.attributes.innovation}</div>
+                                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                                      <div className="w-2 h-2 bg-cyan-400 rounded-full opacity-60"></div>
+                                    </div>
+                                  </motion.div>
+                                </div>
+                              </div>
+                            )}
+                            
+                            {/* Bottom Row - Enhanced with better spacing and styling (NO CARD TYPE) */}
+                            <div className="flex justify-between items-center">
+                              <motion.span 
+                                className={`text-sm px-3 py-1.5 rounded-full border font-medium ${getRarityColor(heroRarity)}`}
+                                whileHover={{ scale: 1.05 }}
+                              >
+                                {heroRarity}
+                              </motion.span>
+                              <div className="text-right">
+                                <span className="text-sm text-gray-400 font-mono">
+                                  Token ID #{hero.tokenId}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                     </div>
                   ) : (
                     <div className="text-center py-12">

@@ -48,8 +48,8 @@ const EcosystemOverview = () => {
           <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       ),
-      title: "MEDA SHOOTER",
-      description: "Play an ancient game from Cryptomeda to train your reflexes and shooting skills. Top 10 players earn Meda Gas daily.",
+      title: "MEDASHOOTER",
+      description: "Play an ancient game from Cryptomeda to train your reflexes and shooting skills.",
       action: "Play Now",
       isLive: true,
       link: "/meda-shooter",
@@ -61,7 +61,7 @@ const EcosystemOverview = () => {
     {
       icon: <Shield size={32} className="text-resistance-light" />,
       title: "RESISTANCE HUB",
-      description: "Complete daily missions and tactical challenges and earn rewards in the form of Meda Gas for joining the resistance.",
+      description: "Complete daily missions and tactical challenges and earn rewards Meda Gas for joining the resistance.",
       action: "Coming Soon",
       isLive: false,
       borderColor: "border-resistance-light/30",
@@ -72,7 +72,7 @@ const EcosystemOverview = () => {
     {
       icon: <Gamepad2 size={32} className="text-energy-green" />,
       title: "SWARM DOMINION",
-      description: "Deploy your hero artifacts and legendary weapons to liberate lands occupied by the Swarm. Generate Meda Gas based on your Power.",
+      description: "Deploy your hero artifacts and legendary weapons to liberate lands occupied by the Swarm.",
       action: "Coming Soon",
       isLive: false,
       borderColor: "border-energy-green/30",
@@ -218,7 +218,7 @@ const EcosystemOverview = () => {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 viewport={{ once: true }}
               >
-                Our galaxy bleeds under Swarm occupation, but every Guardian carries the fire of liberation. Through tactical missions and strategic combat, we will purify corrupted worlds and forge Phoenix Essence from the ashes of our enemies. Each battle brings us closer to freedom.
+                Our galaxy bleeds under Swarm occupation, but every Guardian carries the fire of liberation. Through tactical missions and strategic combat, we will purify corrupted worlds and forge Meda Gas from the ashes of our enemies. Each battle brings us closer to freedom.
               </motion.p>
             </motion.div>
             
@@ -331,7 +331,7 @@ const EcosystemOverview = () => {
                     transition={{ duration: 0.8, delay: 0.5 }}
                     viewport={{ once: true }}
                   >
-                    Our galaxy bleeds under Swarm occupation, but every Guardian carries the fire of liberation. Through tactical missions and strategic combat, we will purify corrupted worlds and forge Phoenix Essence from the ashes of our enemies. Each battle brings us closer to freedom.
+                    Our galaxy bleeds under Swarm occupation, but every Guardian carries the fire of liberation. Through tactical missions and strategic combat, we will purify corrupted worlds and forge Meda Gas from the ashes of our enemies. Each battle brings us closer to freedom.
                   </motion.p>
                 </div>
               </motion.div>

@@ -523,7 +523,7 @@ const StoryPage = () => {
               viewport={{ once: true }}
             >
               <p className="text-phoenix-primary/60 text-sm font-orbitron">
-                ©2025 Swarm Resistance
+                ©2025 Swarm Resistance, All Rights Reserved
               </p>
             </motion.div>
           </div>

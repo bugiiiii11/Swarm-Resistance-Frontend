@@ -9,7 +9,7 @@ const metricsData = [
     title: "HERO ARTIFACTS",
     value: 0,
     target: 4023,
-    description: "Combat-ready operatives deployed across web and Telegram battlefronts",
+    //description: "Combat-ready operatives deployed across web and Telegram battlefronts",
     iconBackground: "bg-neon-cyan/20",
     textColor: "text-neon-cyan",
     color: "#00F0FF",
@@ -17,10 +17,10 @@ const metricsData = [
   },
   {
     icon: <Shield size={24} className="text-meda-gold" />,
-    title: "LEGENDARY WEAPONS",
+    title: "WEAPONS",
     value: 0,
     target: 10350,
-    description: "Legendary warriors with specialized combat abilities and battle histories",
+    //description: "Legendary warriors with specialized combat abilities and battle histories",
     iconBackground: "bg-meda-gold/20",
     textColor: "text-meda-gold",
     color: "#FFB61E",
@@ -31,7 +31,7 @@ const metricsData = [
     title: "LIBERATED LANDS",
     value: 0,
     target: 449,
-    description: "Strategic zones reclaimed from Swarm control across multiple sectors",
+    //description: "Strategic zones reclaimed from Swarm control across multiple sectors",
     iconBackground: "bg-nebula-pink/20",
     textColor: "text-nebula-pink",
     color: "#FF3E8A",
@@ -39,10 +39,10 @@ const metricsData = [
   },
   {
     icon: <Zap size={24} className="text-energy-green" />,
-    title: "MEDA GAS RELEASED (Mil)",
+    title: "MEDA GAS (Mil)",
     value: 0,
     target: 150,
-    description: "Critical energy resources powering the resistance war machine",
+    //description: "Critical energy resources powering the resistance war machine",
     iconBackground: "bg-energy-green/20",
     textColor: "text-energy-green",
     color: "#39FF14",
@@ -210,7 +210,7 @@ const CommunityMetrics = () => {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 viewport={{ once: true }}
               >
-                The AI Commander sensors pulse with incoming battlefield data as the resistance network expands. Live intelligence reports show Hero Artifacts resonating with Meda energy, legendary weapons charging with Phoenix Essence, and liberated lands sending signals of successful defense operations.
+                The AI Commander sensors pulse with incoming battlefield data as the resistance network expands. Live intelligence reports show Hero Artifacts resonating with Meda energy, legendary weapons charging with Meda Gas, and liberated lands sending signals of successful defense operations.
               </motion.p>
             </motion.div>
 
@@ -351,7 +351,7 @@ const CommunityMetrics = () => {
                   transition={{ duration: 0.8, delay: 0.5 }}
                   viewport={{ once: true }}
                 >
-                  The AI Commander sensors pulse with incoming battlefield data as the resistance network expands. Live intelligence reports show Hero Artifacts resonating with Meda energy, legendary weapons charging with Phoenix Essence, and liberated lands sending signals of successful defense operations. 
+                  The AI Commander sensors pulse with incoming battlefield data as the resistance network expands. Live intelligence reports show Hero Artifacts resonating with Meda energy, legendary weapons charging with Meda Gas, and liberated lands sending signals of successful defense operations.
                 </motion.p>
               </motion.div>
 

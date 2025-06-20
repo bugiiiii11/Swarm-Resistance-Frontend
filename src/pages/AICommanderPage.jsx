@@ -346,7 +346,7 @@ const AICommanderPage = () => {
               </div>
             </motion.div>
 
-            {/* Footer section 
+            {/* Footer section */}
             <motion.div 
               className="text-center py-8 mt-16"
               initial={{ opacity: 0 }}
@@ -354,10 +354,10 @@ const AICommanderPage = () => {
               transition={{ duration: 1, delay: 4 }}
             >
               <p className="text-phoenix-primary/60 text-sm font-orbitron">
-                ©2025 Swarm Resistance - Awakening Ancient Wisdom
+                Awakening Ancient Wisdom
               </p>
             </motion.div>
-            */}
+            
           </div>
         </div>
       </div>

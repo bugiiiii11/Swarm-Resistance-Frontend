@@ -180,18 +180,6 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
             />
           ))}
 
-          {/* Status text */}
-          <motion.div
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            <div className="text-sm font-mono text-green-400 bg-black/50 px-3 py-1 rounded">
-              WARP TRANSITION
-            </div>
-          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

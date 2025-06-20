@@ -113,7 +113,7 @@ const OnboardingSteps = () => {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 viewport={{ once: true }}
               >
-                We need every hero, every weapon, every strategic mind to reclaim what the Swarm has stolen. Connect your Web3 identity, deploy your NFT arsenal in tactical combat, and earn Phoenix Essence through victory. The resistance grows stronger with each Guardian who answers the call.
+                We need you to reclaim what the Swarm has stolen. Connect your Web3 identity, deploy your NFT arsenal, and earn Meda Gas through victory. The resistance grows stronger with each Guardian who answers the call.
               </motion.p>
             </motion.div>
 
@@ -121,20 +121,20 @@ const OnboardingSteps = () => {
             <div className="space-y-4 mb-6 mt-auto pt-16"> {/* Added pt-16 to push cards down more */}
               {[
                 {
-                  title: "Daily Rewards",
-                  description: "Earn Phoenix Essence daily",
+                  title: "Digital Arsenal",
+                  description: "Deploy legendary Hero Artifacts containing crystallized memories of ancient Cryptomeda heroes. Arm them with weapons to liberate territories from Swarm invasions.",
                   color: "#FF8C00",
                   icon: "🏆"
                 },
                 {
-                  title: "NFT Utility", 
-                  description: "Deploy NFTs in combat",
+                  title: "Token Airdrop Program", 
+                  description: "Earn Meda Gas through testing missions and challenges. All tokens will transform into Phoenix Essence at launch, rewarding early Guardians who build the resistance.",
                   color: "#3B82F6",
                   icon: "⚔️"
                 },
                 {
-                  title: "Token Airdrop",
-                  description: "Future token rewards", 
+                  title: "Phoenix Essence Economy",
+                  description: "Earn Phoenix Essence from the ashes of defeated enemies. Every victory against the Swarm releases purified energy that powers the resistance and rewards your courage.",
                   color: "#22C55E",
                   icon: "🚀"
                 }
@@ -177,7 +177,7 @@ const OnboardingSteps = () => {
               ))}
             </div>
 
-            {/* Mobile Copyright - Above nav menu */}
+            {/* Mobile Copyright - Above nav menu
             <motion.div 
               className="text-center mb-10" // Added mb-10 to clear nav menu
               initial={{ opacity: 0 }}
@@ -189,6 +189,7 @@ const OnboardingSteps = () => {
                 ©2025 Swarm Resistance, All Rights Reserved
               </p>
             </motion.div>
+            */}
           </div>
         ) : (
           /* Desktop Layout - Back to original structure with small adjustments */
@@ -224,7 +225,7 @@ const OnboardingSteps = () => {
                   transition={{ duration: 0.8, delay: 0.5 }}
                   viewport={{ once: true }}
                 >
-                  We need every hero, every weapon, every strategic mind to reclaim what the Swarm has stolen. Connect your Web3 identity, deploy your NFT arsenal in tactical combat, and earn Phoenix Essence through victory. The resistance grows stronger with each Guardian who answers the call.
+                  We need you to reclaim what the Swarm has stolen. Connect your Web3 identity, deploy your NFT arsenal, and earn Meda Gas through victory. The resistance grows stronger with each Guardian who answers the call.
                 </motion.p>
               </motion.div>
 
@@ -241,7 +242,7 @@ const OnboardingSteps = () => {
                 viewport={{ once: true }}
               >
                 <div className="grid md:grid-cols-3 gap-4 max-w-6xl mx-auto px-8">
-                  {/* Daily Rewards */}
+                  {/* Digital Arsenal */}
                   <motion.div
                     className="text-center p-4 rounded-lg backdrop-blur-md"
                     style={{
@@ -259,14 +260,15 @@ const OnboardingSteps = () => {
                     viewport={{ once: true }}
                   >
                     <h3 className="text-lg font-orbitron font-bold text-phoenix-primary mb-2">
-                      Daily Rewards
+                      Digital Arsenal
                     </h3>
                     <p className="text-gray-300 text-sm">
-                      Earn Phoenix Essence daily through missions and activities
+                       Deploy legendary Hero Artifacts containing crystallized memories of ancient Cryptomeda heroes. Arm them with weapons to liberate territories from Swarm invasions.
+
                     </p>
                   </motion.div>
 
-                  {/* NFT Utility */}
+                  {/* Token Airdrop */}
                   <motion.div
                     className="text-center p-4 rounded-lg backdrop-blur-md"
                     style={{
@@ -284,10 +286,10 @@ const OnboardingSteps = () => {
                     viewport={{ once: true }}
                   >
                     <h3 className="text-lg font-orbitron font-bold text-resistance-light mb-2">
-                      NFT Utility
+                      Token Airdrop Program
                     </h3>
                     <p className="text-gray-300 text-sm">
-                      Deploy your Hero and Weapon NFTs in strategic combat
+                       Earn Meda Gas through testing missions and challenges. All tokens will transform into Phoenix Essence at launch, rewarding early Guardians who build the resistance.
                     </p>
                   </motion.div>
 
@@ -309,10 +311,10 @@ const OnboardingSteps = () => {
                     viewport={{ once: true }}
                   >
                     <h3 className="text-lg font-orbitron font-bold text-energy-green mb-2">
-                      Token Airdrop
+                      Phoenix Essence Economy
                     </h3>
                     <p className="text-gray-300 text-sm">
-                      Prepare for future token airdrops through Guardian ranks
+                       Earn Phoenix Essence from the ashes of defeated enemies. Every victory against the Swarm releases purified energy that powers the resistance and rewards your courage.
                     </p>
                   </motion.div>
                 </div>
@@ -328,9 +330,10 @@ const OnboardingSteps = () => {
                 viewport={{ once: true }}
               >
                 <p className="text-phoenix-primary/60 text-sm font-orbitron">
-                  ©2025 Swarm Resistance, All Rights Reserved
+                   
                 </p>
               </motion.div>
+              
             </div>
           </div>
         )}

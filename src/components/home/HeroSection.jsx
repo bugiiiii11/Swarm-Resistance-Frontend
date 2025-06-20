@@ -445,7 +445,7 @@ const HeroSection = () => {
                     textShadow: '0 0 8px rgba(255, 255, 255, 0.8)'
                   }}
                 >
-                  JOIN THE RESISTANCE
+                  PLAY MEDASHOOTER
                 </span>
               </motion.button>
             </div>
@@ -886,7 +886,7 @@ const HeroSection = () => {
                           textShadow: '0 0 10px rgba(255, 255, 255, 0.8)'
                         }}
                       >
-                        JOIN THE RESISTANCE
+                        PLAY MEDASHOOTER
                       </span>
                       
                       {/* Desktop corner indicators */}
