@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform, useMotionValue, useTransform as useMotionTransform, animate } from 'framer-motion';
-import { Zap, Target, Crosshair, Award, Trophy, Star, Play } from 'lucide-react';
+import { Zap, Target, Crosshair, Award, Trophy, Star, Play, X } from 'lucide-react';
+import Unity, { UnityContext } from 'react-unity-webgl';
 import { useWeb3Auth } from '../contexts/Web3AuthContext';
 
 const MedaShooterPage = () => {
@@ -18,11 +19,27 @@ const MedaShooterPage = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [playerScore, setPlayerScore] = useState(null);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+  
+  // Unity modal state
+  const [showGameModal, setShowGameModal] = useState(false);
+  const [unityLoaded, setUnityLoaded] = useState(false);
+  const [unityProgress, setUnityProgress] = useState(0);
 
   // State for animated counter
   const [hasAnimated, setHasAnimated] = useState(false);
   const count = useMotionValue(0);
   const rounded = useMotionTransform(count, (latest) => Math.round(latest));
+
+  // Unity context configuration
+  const unityContext = useMemo(() => new UnityContext({
+    loaderUrl: "/unity-builds/medashooter/Build/medashooter.loader.js",
+    dataUrl: "/unity-builds/medashooter/Build/medashooter.data.gz",
+    frameworkUrl: "/unity-builds/medashooter/Build/medashooter.framework.js.gz",
+    codeUrl: "/unity-builds/medashooter/Build/medashooter.wasm.gz",
+    companyName: "Cryptomeda",
+    productName: "Meda Shooter",
+    productVersion: "1.0",
+  }), []);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -33,6 +50,62 @@ const MedaShooterPage = () => {
   useEffect(() => {
     loadLeaderboard();
   }, [walletAddress]);
+
+  // Unity event listeners
+  useEffect(() => {
+    // Make dispatchReactUnityEvent available globally for Unity
+    window.dispatchReactUnityEvent = (eventName) => {
+      console.log('Unity event received:', eventName);
+      
+      if (eventName === 'ReadyToWalletAddress') {
+        if (walletAddress) {
+          console.log('Sending wallet address to Unity:', walletAddress);
+          unityContext.send('JavascriptHook', 'SetWalletAddress', walletAddress);
+        }
+      } else if (eventName === 'GameOver') {
+        console.log('Game over received from Unity');
+        // Refresh leaderboard after game
+        loadLeaderboard();
+        // Close modal after a short delay
+        setTimeout(() => {
+          setShowGameModal(false);
+        }, 2000);
+      }
+    };
+
+    // Unity loading progress
+    const handleProgress = (progression) => {
+      setUnityProgress(Math.round(progression * 100));
+    };
+
+    // Unity loaded
+    const handleLoaded = () => {
+      console.log('Unity game loaded successfully');
+      setUnityLoaded(true);
+    };
+
+    // Unity error handling
+    const handleError = (message) => {
+      console.error('Unity error:', message);
+      setGameError(`Unity error: ${message}`);
+    };
+
+    unityContext.on('progress', handleProgress);
+    unityContext.on('loaded', handleLoaded);
+    unityContext.on('error', handleError);
+
+    // Cleanup
+    return () => {
+      unityContext.removeEventListener('progress', handleProgress);
+      unityContext.removeEventListener('loaded', handleLoaded);
+      unityContext.removeEventListener('error', handleError);
+      
+      // Clean up global function
+      if (window.dispatchReactUnityEvent) {
+        delete window.dispatchReactUnityEvent;
+      }
+    };
+  }, [unityContext, walletAddress]);
 
   // Animate counter when component loads
   useEffect(() => {
@@ -74,11 +147,31 @@ const MedaShooterPage = () => {
     }
   };
 
+  // Validate player (check blacklist)
+  const validatePlayer = async (address) => {
+    try {
+      const baseUrl = 'https://swarm-resistance-backend-production.up.railway.app';
+      const response = await fetch(`${baseUrl}/api/v1/minigames/medashooter/blacklist/?wallet_address=${address}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        return { valid: !data.blacklisted, message: data.message };
+      }
+      return { valid: true };
+    } catch (error) {
+      console.error('Failed to validate player:', error);
+      return { valid: true }; // Default to allowing play if validation fails
+    }
+  };
+
   // Handle Deploy button click
   const handleDeployClick = async () => {
+    setGameError(null);
+    
     if (!isConnected) {
       try {
         await login();
+        return; // Let the wallet connection complete, user will click again
       } catch (error) {
         console.error('Failed to connect wallet:', error);
         setGameError('Failed to connect wallet. Please try again.');
@@ -86,9 +179,24 @@ const MedaShooterPage = () => {
       }
     }
 
-    // For now, just open the external game
-    setGameError(null);
-    window.open('https://game.cryptomeda.tech', '_blank');
+    // Validate player (check blacklist)
+    const validation = await validatePlayer(walletAddress);
+    if (!validation.valid) {
+      setGameError(validation.message || 'Player is not eligible to play.');
+      return;
+    }
+
+    // Open Unity modal
+    setShowGameModal(true);
+    setUnityLoaded(false);
+    setUnityProgress(0);
+  };
+
+  // Close modal handler
+  const closeModal = () => {
+    setShowGameModal(false);
+    setUnityLoaded(false);
+    setUnityProgress(0);
   };
   
   // Enhanced parallax effects
@@ -206,6 +314,87 @@ const MedaShooterPage = () => {
         ))}
       </motion.div>
 
+      {/* Unity Game Modal */}
+      {showGameModal && (
+        <motion.div 
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div 
+            className="relative w-full h-full max-w-7xl max-h-[90vh] bg-void-primary rounded-lg overflow-hidden"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Header with close button */}
+            <div className="absolute top-0 left-0 right-0 z-10 flex justify-between items-center p-4 bg-gradient-to-b from-void-primary to-transparent">
+              <h3 className="text-xl font-orbitron font-bold text-phoenix-primary">
+                Meda Shooter
+              </h3>
+              <button
+                onClick={closeModal}
+                className="p-2 rounded-lg bg-void-secondary/80 hover:bg-void-secondary transition-colors"
+              >
+                <X size={24} className="text-gray-300" />
+              </button>
+            </div>
+
+            {/* Unity Game Container */}
+            <div className="w-full h-full pt-16">
+              {!unityLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-void-primary">
+                  <div className="text-center">
+                    <motion.div
+                      className="w-16 h-16 border-4 border-phoenix-primary border-t-transparent rounded-full mx-auto mb-4"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    />
+                    <p className="text-phoenix-primary font-orbitron font-bold text-xl mb-2">
+                      Loading Game
+                    </p>
+                    <div className="w-64 bg-void-secondary rounded-full h-2 mx-auto mb-2">
+                      <motion.div
+                        className="h-full bg-gradient-to-r from-phoenix-primary to-phoenix-light rounded-full"
+                        style={{ width: `${unityProgress}%` }}
+                      />
+                    </div>
+                    <p className="text-gray-400 text-sm">{unityProgress}%</p>
+                  </div>
+                </div>
+              )}
+              
+              <Unity 
+                unityProvider={unityContext}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: unityLoaded ? "block" : "none"
+                }}
+              />
+            </div>
+
+            {/* Status Footer */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-void-primary to-transparent">
+              <div className="flex justify-center space-x-6 text-sm text-gray-400">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 rounded-full bg-success-green animate-pulse" />
+                  <span>Connected: {walletAddress?.slice(0, 6)}...{walletAddress?.slice(-4)}</span>
+                </div>
+                {unityLoaded && (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-phoenix-primary animate-pulse" />
+                    <span>Game Ready</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
       {/* Main content */}
       <div className="relative z-10 min-h-screen w-full pt-16 md:pl-64">
         <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col">
@@ -264,12 +453,13 @@ const MedaShooterPage = () => {
                 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleDeployClick}
-                disabled={web3Loading}
+                disabled={web3Loading || showGameModal}
               >
                 <div className="flex items-center space-x-2">
                   <Play size={24} />
                   <span>
                     {web3Loading ? 'CONNECTING...' : 
+                     showGameModal ? 'GAME LOADING...' :
                      !isConnected ? 'CONNECT WALLET TO DEPLOY' : 
                      'DEPLOY'}
                   </span>
