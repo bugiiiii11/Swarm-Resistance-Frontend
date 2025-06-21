@@ -555,7 +555,7 @@ const MedaShooterPage = () => {
           </motion.div>
           
           {/* Bottom space */}
-          <motion.div 
+          <div 
             className="text-center py-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
