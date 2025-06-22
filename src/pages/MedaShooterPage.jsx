@@ -184,7 +184,7 @@ const MedaShooterPage = () => {
               Meda Shooter is an ancient training program to test shooting skills and reflexes where the hero fights endless amounts of Swarm enemies. Deploy hero artifacts and legendary weapons to increase your edge in the game.
             </motion.p>
             
-            {/* Action Button */}
+            {/* Action Button - Inactive */}
             <motion.div
               className="mt-8"
               initial={{ opacity: 0, y: 20 }}
@@ -193,15 +193,11 @@ const MedaShooterPage = () => {
               viewport={{ once: true }}
             >
               <motion.button
-                className="btn-phoenix-primary px-8 py-4 text-xl font-orbitron font-bold"
-                whileHover={{ 
-                  scale: 1.05,
-                  boxShadow: "0 0 30px rgba(255, 140, 0, 0.6)"
-                }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => window.open('https://game.cryptomeda.tech', '_blank')}
+                className="px-8 py-4 text-xl font-orbitron font-bold bg-gray-600/50 text-gray-400 border border-gray-500/50 rounded-lg cursor-not-allowed opacity-60"
+                disabled
+                style={{ pointerEvents: 'none' }}
               >
-                DEPLOY
+                DEPLOY - COMING SOON
               </motion.button>
             </motion.div>
           </motion.div>
