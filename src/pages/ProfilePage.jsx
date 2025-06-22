@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef  } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Trophy, Zap, Edit2, Save, X, Calendar, Shield, Sword, MapPin, RefreshCw, Copy, Check, Wallet } from 'lucide-react';
 import { useWeb3Auth } from '../contexts/Web3AuthContext';
 import { RANKS } from '../services/userProfile.service';
@@ -28,6 +28,17 @@ const ProfilePage = () => {
   const [imageErrors, setImageErrors] = useState(new Set());
   const [copied, setCopied] = useState(false);
 
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Enhanced parallax effects - same as BlogPage
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const starsY = useTransform(scrollYProgress, [0, 1], ['0%', '-20%']);
+  const particlesY = useTransform(scrollYProgress, [0, 1], ['0%', '15%']);
+
   useEffect(() => {
     if (userProfile) {
       setEditedProfile({
@@ -37,21 +48,21 @@ const ProfilePage = () => {
     }
   }, [userProfile]);
 
-  // Enhanced floating particles
-  const particles = Array.from({ length: 15 }).map((_, i) => ({
+  // Enhanced floating particles - same as BlogPage
+  const particles = Array.from({ length: 20 }).map((_, i) => ({
     id: i,
-    delay: i * 0.3,
-    duration: 12 + Math.random() * 6,
-    size: 1.5 + Math.random() * 2.5,
+    delay: i * 0.2,
+    duration: 8 + Math.random() * 4,
+    size: 2 + Math.random() * 3,
     left: Math.random() * 100,
     color: i % 4 === 0 ? "#FF8C00" : i % 4 === 1 ? "#60A5FA" : i % 4 === 2 ? "#8B5CF6" : "#22C55E"
   }));
 
-  // Phoenix fire particles
-  const fireParticles = Array.from({ length: 8 }).map((_, i) => ({
+  // Phoenix fire particles - same as BlogPage
+  const fireParticles = Array.from({ length: 10 }).map((_, i) => ({
     id: i,
-    delay: i * 1.2,
-    duration: 6 + Math.random() * 3,
+    delay: i * 0.8,
+    duration: 5 + Math.random() * 3,
     left: 10 + Math.random() * 80,
   }));
 
@@ -70,11 +81,14 @@ const ProfilePage = () => {
 
   if (!isConnected) {
     return (
-      <div className="full-screen-section relative overflow-hidden bg-void-primary">
-        {/* Enhanced background layers */}
-        <div className="absolute inset-0 w-full h-full">
+      <div className="full-screen-section relative overflow-hidden bg-void-primary" ref={sectionRef}>
+        {/* Enhanced background layers - same as BlogPage */}
+        <motion.div 
+          className="absolute inset-0 w-full h-full"
+          style={{ y: backgroundY }}
+        >
           {/* Starfield background */}
-          <div 
+          <motion.div 
             className="absolute inset-0 w-full h-full opacity-40"
             style={{ 
               backgroundImage: `radial-gradient(2px 2px at 20px 30px, #FF8C00, transparent),
@@ -83,17 +97,22 @@ const ProfilePage = () => {
                                radial-gradient(1px 1px at 130px 80px, #22C55E, transparent),
                                radial-gradient(2px 2px at 160px 30px, #FF8C00, transparent)`,
               backgroundRepeat: 'repeat',
-              backgroundSize: '200px 100px'
+              backgroundSize: '200px 100px',
+              y: starsY
             }}
           />
           
-          {/* Nebula overlay */}
-          <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/30 via-transparent to-void-primary/60" />
-          <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/10 via-resistance-primary/10 to-energy-purple/10 opacity-30" />
-        </div>
+          {/* Uniform nebula overlay - same as BlogPage */}
+          <div className="absolute inset-0 bg-gradient-to-b from-void-primary via-void-secondary to-void-primary" />
+          <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/20 via-transparent to-void-primary/40" />
+          <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/5 via-resistance-primary/5 to-energy-purple/5 opacity-30" />
+        </motion.div>
 
-        {/* Enhanced floating particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Enhanced floating particles - same as BlogPage */}
+        <motion.div 
+          className="absolute inset-0 overflow-hidden pointer-events-none"
+          style={{ y: particlesY }}
+        >
           {particles.map(particle => (
             <motion.div
               key={particle.id}
@@ -107,7 +126,7 @@ const ProfilePage = () => {
               }}
               animate={{
                 y: ['120vh', '-10vh'],
-                x: [0, Math.sin(particle.id * 0.5) * 150],
+                x: [0, Math.sin(particle.id * 0.5) * 100],
                 opacity: [0, 0.8, 0.8, 0],
                 scale: [0.5, 1, 1, 0.3]
               }}
@@ -142,7 +161,7 @@ const ProfilePage = () => {
               }}
             />
           ))}
-        </div>
+        </motion.div>
         
         <div className="relative z-10 min-h-screen w-full pt-16 md:pl-64">
           <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col items-center justify-center">
@@ -205,11 +224,14 @@ const ProfilePage = () => {
 
   if (!userProfile) {
     return (
-      <div className="full-screen-section relative overflow-hidden bg-void-primary">
-        {/* Enhanced background layers */}
-        <div className="absolute inset-0 w-full h-full">
+      <div className="full-screen-section relative overflow-hidden bg-void-primary" ref={sectionRef}>
+        {/* Enhanced background layers - same as BlogPage */}
+        <motion.div 
+          className="absolute inset-0 w-full h-full"
+          style={{ y: backgroundY }}
+        >
           {/* Starfield background */}
-          <div 
+          <motion.div 
             className="absolute inset-0 w-full h-full opacity-40"
             style={{ 
               backgroundImage: `radial-gradient(2px 2px at 20px 30px, #FF8C00, transparent),
@@ -218,17 +240,22 @@ const ProfilePage = () => {
                                radial-gradient(1px 1px at 130px 80px, #22C55E, transparent),
                                radial-gradient(2px 2px at 160px 30px, #FF8C00, transparent)`,
               backgroundRepeat: 'repeat',
-              backgroundSize: '200px 100px'
+              backgroundSize: '200px 100px',
+              y: starsY
             }}
           />
           
-          {/* Nebula overlay */}
-          <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/30 via-transparent to-void-primary/60" />
-          <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/10 via-resistance-primary/10 to-energy-purple/10 opacity-30" />
-        </div>
+          {/* Uniform nebula overlay - same as BlogPage */}
+          <div className="absolute inset-0 bg-gradient-to-b from-void-primary via-void-secondary to-void-primary" />
+          <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/20 via-transparent to-void-primary/40" />
+          <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/5 via-resistance-primary/5 to-energy-purple/5 opacity-30" />
+        </motion.div>
 
-        {/* Enhanced floating particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Enhanced floating particles - same as BlogPage */}
+        <motion.div 
+          className="absolute inset-0 overflow-hidden pointer-events-none"
+          style={{ y: particlesY }}
+        >
           {particles.map(particle => (
             <motion.div
               key={particle.id}
@@ -242,7 +269,7 @@ const ProfilePage = () => {
               }}
               animate={{
                 y: ['120vh', '-10vh'],
-                x: [0, Math.sin(particle.id * 0.5) * 150],
+                x: [0, Math.sin(particle.id * 0.5) * 100],
                 opacity: [0, 0.8, 0.8, 0],
                 scale: [0.5, 1, 1, 0.3]
               }}
@@ -277,7 +304,7 @@ const ProfilePage = () => {
               }}
             />
           ))}
-        </div>
+        </motion.div>
 
         <div className="relative z-10 min-h-screen w-full pt-16 md:pl-64">
           <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col items-center justify-center">
@@ -402,11 +429,14 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="full-screen-section relative overflow-hidden bg-void-primary">
-      {/* Enhanced background layers */}
-      <div className="absolute inset-0 w-full h-full">
+    <div className="full-screen-section relative overflow-hidden bg-void-primary" ref={sectionRef}>
+      {/* Enhanced background layers - same as BlogPage */}
+      <motion.div 
+        className="absolute inset-0 w-full h-full"
+        style={{ y: backgroundY }}
+      >
         {/* Starfield background */}
-        <div 
+        <motion.div 
           className="absolute inset-0 w-full h-full opacity-40"
           style={{ 
             backgroundImage: `radial-gradient(2px 2px at 20px 30px, #FF8C00, transparent),
@@ -415,17 +445,22 @@ const ProfilePage = () => {
                              radial-gradient(1px 1px at 130px 80px, #22C55E, transparent),
                              radial-gradient(2px 2px at 160px 30px, #FF8C00, transparent)`,
             backgroundRepeat: 'repeat',
-            backgroundSize: '200px 100px'
+            backgroundSize: '200px 100px',
+            y: starsY
           }}
         />
         
-        {/* Nebula overlay */}
-        <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/30 via-transparent to-void-primary/60" />
-        <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/10 via-resistance-primary/10 to-energy-purple/10 opacity-30" />
-      </div>
+        {/* Uniform nebula overlay - same as BlogPage */}
+        <div className="absolute inset-0 bg-gradient-to-b from-void-primary via-void-secondary to-void-primary" />
+        <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/20 via-transparent to-void-primary/40" />
+        <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/5 via-resistance-primary/5 to-energy-purple/5 opacity-30" />
+      </motion.div>
 
-      {/* Enhanced floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Enhanced floating particles - same as BlogPage */}
+      <motion.div 
+        className="absolute inset-0 overflow-hidden pointer-events-none"
+        style={{ y: particlesY }}
+      >
         {particles.map(particle => (
           <motion.div
             key={particle.id}
@@ -439,7 +474,7 @@ const ProfilePage = () => {
             }}
             animate={{
               y: ['120vh', '-10vh'],
-              x: [0, Math.sin(particle.id * 0.5) * 150],
+              x: [0, Math.sin(particle.id * 0.5) * 100],
               opacity: [0, 0.8, 0.8, 0],
               scale: [0.5, 1, 1, 0.3]
             }}
@@ -474,7 +509,7 @@ const ProfilePage = () => {
             }}
           />
         ))}
-      </div>
+      </motion.div>
 
       {/* Main content - properly centered accounting for sidebar */}
       <div className="relative z-10 min-h-screen w-full pt-16 md:pl-64">

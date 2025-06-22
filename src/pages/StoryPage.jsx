@@ -104,27 +104,27 @@ const StoryPage = () => {
     }
   ];
 
-  // Enhanced floating particles
-  const particles = Array.from({ length: 15 }).map((_, i) => ({
+  // Enhanced floating particles - using BlogPage setup
+  const particles = Array.from({ length: 20 }).map((_, i) => ({
     id: i,
-    delay: i * 0.3,
-    duration: 12 + Math.random() * 6,
-    size: 1.5 + Math.random() * 2.5,
+    delay: i * 0.2,
+    duration: 8 + Math.random() * 4,
+    size: 2 + Math.random() * 3,
     left: Math.random() * 100,
     color: i % 4 === 0 ? "#FF8C00" : i % 4 === 1 ? "#60A5FA" : i % 4 === 2 ? "#8B5CF6" : "#22C55E"
   }));
 
-  // Phoenix fire particles
-  const fireParticles = Array.from({ length: 8 }).map((_, i) => ({
+  // Phoenix fire particles - using BlogPage setup
+  const fireParticles = Array.from({ length: 10 }).map((_, i) => ({
     id: i,
-    delay: i * 1.2,
-    duration: 6 + Math.random() * 3,
+    delay: i * 0.8,
+    duration: 5 + Math.random() * 3,
     left: 10 + Math.random() * 80,
   }));
 
   return (
-    <div className="full-screen-section relative overflow-hidden bg-void-primary">
-      {/* Enhanced background layers */}
+    <div className="full-screen-section relative overflow-hidden bg-void-primary" ref={sectionRef}>
+      {/* UPDATED: Using exact BlogPage background layers */}
       <motion.div 
         className="absolute inset-0 w-full h-full"
         style={{ y: backgroundY }}
@@ -144,12 +144,13 @@ const StoryPage = () => {
           }}
         />
         
-        {/* Nebula overlay */}
-        <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/30 via-transparent to-void-primary/60" />
-        <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/10 via-resistance-primary/10 to-energy-purple/10 opacity-30" />
+        {/* UPDATED: Using exact BlogPage nebula overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-void-primary via-void-secondary to-void-primary" />
+        <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/20 via-transparent to-void-primary/40" />
+        <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/5 via-resistance-primary/5 to-energy-purple/5 opacity-30" />
       </motion.div>
 
-      {/* Enhanced floating particles */}
+      {/* Enhanced floating particles - using BlogPage setup */}
       <motion.div 
         className="absolute inset-0 overflow-hidden pointer-events-none"
         style={{ y: particlesY }}
@@ -167,7 +168,7 @@ const StoryPage = () => {
             }}
             animate={{
               y: ['120vh', '-10vh'],
-              x: [0, Math.sin(particle.id * 0.5) * 150],
+              x: [0, Math.sin(particle.id * 0.5) * 100],
               opacity: [0, 0.8, 0.8, 0],
               scale: [0.5, 1, 1, 0.3]
             }}
@@ -180,7 +181,7 @@ const StoryPage = () => {
           />
         ))}
         
-        {/* Phoenix fire particles */}
+        {/* Phoenix fire particles - using BlogPage setup */}
         {fireParticles.map(particle => (
           <motion.div
             key={`fire-${particle.id}`}
@@ -260,7 +261,7 @@ const StoryPage = () => {
                 <div className="relative flex items-center space-x-3">
                   <div className="w-3 h-3 rounded-full bg-phoenix-primary animate-pulse-phoenix" />
                   <div className="text-left">
-                    <div className="text-sm font-medium text-phoenix-primary font-orbitron">PART I</div>
+                    <div className="text-sm font-medium text-phoenix-primary font-orbitron">Epiloque</div>
                     <div className="text-lg font-bold text-stellar-white font-orbitron">The Fall</div>
                   </div>
                   <div className="w-2 h-8 bg-gradient-to-b from-phoenix-primary to-phoenix-light rounded-full" />
@@ -285,7 +286,7 @@ const StoryPage = () => {
                 <div className="relative flex items-center space-x-3 opacity-60">
                   <div className="w-3 h-3 rounded-full bg-resistance-light/50 animate-pulse" />
                   <div className="text-left">
-                    <div className="text-sm font-medium text-resistance-light/70 font-orbitron">PART II</div>
+                    <div className="text-sm font-medium text-resistance-light/70 font-orbitron">PART I</div>
                     <div className="text-lg font-bold text-gray-400 font-orbitron">Hide & Seek</div>
                   </div>
                   <div className="w-2 h-8 bg-gradient-to-b from-resistance-light/30 to-resistance-glow/20 rounded-full" />
@@ -318,77 +319,77 @@ const StoryPage = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.5 }}
             >
-            {storyChapters.map((chapter, index) => (
-              <motion.article
-                key={index}
-                className={`relative rounded-xl overflow-hidden glass-void border ${chapter.borderColor} group`}
-                initial={{ x: index % 2 === 0 ? -100 : 100, opacity: 0 }}
-                whileInView={{ x: 0, opacity: 1 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ 
-                  y: -8,
-                  boxShadow: `0 20px 60px -10px ${chapter.borderColor.replace('border-', '').replace('/30', '')}40`
-                }}
-              >
-                {/* Chapter background gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${chapter.gradient} opacity-50 group-hover:opacity-70 transition-opacity duration-500`} />
-                
-                <div className="relative p-8 md:p-10">
-                  {/* Chapter header */}
-                  <div className="flex flex-col md:flex-row md:items-center mb-8">
-                    <div className="flex items-center mb-4 md:mb-0 md:mr-6">
-                      <div className="w-16 h-16 flex items-center justify-center glass-phoenix rounded-xl mr-4 animate-pulse-phoenix">
-                        {chapter.icon}
+              {storyChapters.map((chapter, index) => (
+                <motion.article
+                  key={index}
+                  className={`relative rounded-xl overflow-hidden glass-void border ${chapter.borderColor} group`}
+                  initial={{ x: index % 2 === 0 ? -100 : 100, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.8, delay: index * 0.1 }}
+                  whileHover={{ 
+                    y: -8,
+                    boxShadow: `0 20px 60px -10px ${chapter.borderColor.replace('border-', '').replace('/30', '')}40`
+                  }}
+                >
+                  {/* Chapter background gradient */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${chapter.gradient} opacity-50 group-hover:opacity-70 transition-opacity duration-500`} />
+                  
+                  <div className="relative p-8 md:p-10">
+                    {/* Chapter header */}
+                    <div className="flex flex-col md:flex-row md:items-center mb-8">
+                      <div className="flex items-center mb-4 md:mb-0 md:mr-6">
+                        <div className="w-16 h-16 flex items-center justify-center glass-phoenix rounded-xl mr-4 animate-pulse-phoenix">
+                          {chapter.icon}
+                        </div>
+                        <div className="text-xs md:text-sm text-gray-400 font-mono">
+                          Chapter {String(index + 1).padStart(2, '0')}
+                        </div>
                       </div>
-                      <div className="text-xs md:text-sm text-gray-400 font-mono">
-                        Chapter {String(index + 1).padStart(2, '0')}
+                      
+                      <div className="flex-1">
+                        <h2 className={`text-2xl md:text-3xl font-bold ${chapter.accentColor} mb-2 font-orbitron`}>
+                          {chapter.title}
+                        </h2>
+                        <h3 className="text-lg md:text-xl text-gray-300 font-medium mb-4">
+                          {chapter.subtitle}
+                        </h3>
+                        <motion.div 
+                          className={`h-1 bg-gradient-to-r from-${chapter.accentColor.replace('text-', '')} to-transparent rounded-full`}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: "150px" }}
+                          transition={{ duration: 1.2, delay: 0.3 + index * 0.1 }}
+                        />
                       </div>
                     </div>
                     
-                    <div className="flex-1">
-                      <h2 className={`text-2xl md:text-3xl font-bold ${chapter.accentColor} mb-2 font-orbitron`}>
-                        {chapter.title}
-                      </h2>
-                      <h3 className="text-lg md:text-xl text-gray-300 font-medium mb-4">
-                        {chapter.subtitle}
-                      </h3>
-                      <motion.div 
-                        className={`h-1 bg-gradient-to-r from-${chapter.accentColor.replace('text-', '')} to-transparent rounded-full`}
-                        initial={{ width: 0 }}
-                        whileInView={{ width: "150px" }}
-                        transition={{ duration: 1.2, delay: 0.3 + index * 0.1 }}
-                      />
+                    {/* Chapter content */}
+                    <div className="space-y-6">
+                      {chapter.content.split('\n\n').map((paragraph, pIndex) => (
+                        <motion.p
+                          key={pIndex}
+                          className="text-gray-300 leading-relaxed text-lg"
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.6, delay: 0.2 + pIndex * 0.1 }}
+                        >
+                          {paragraph}
+                        </motion.p>
+                      ))}
                     </div>
                   </div>
-                  
-                  {/* Chapter content */}
-                  <div className="space-y-6">
-                    {chapter.content.split('\n\n').map((paragraph, pIndex) => (
-                      <motion.p
-                        key={pIndex}
-                        className="text-gray-300 leading-relaxed text-lg"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.2 + pIndex * 0.1 }}
-                      >
-                        {paragraph}
-                      </motion.p>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Hover effect overlay */}
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    background: `linear-gradient(120deg, transparent 30%, ${chapter.borderColor.replace('border-', '').replace('/30', '')}20, transparent 70%)`
-                  }}
-                />
-              </motion.article>
-            ))}
-          </motion.div>
+                  {/* Hover effect overlay */}
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background: `linear-gradient(120deg, transparent 30%, ${chapter.borderColor.replace('border-', '').replace('/30', '')}20, transparent 70%)`
+                    }}
+                  />
+                </motion.article>
+              ))}
+            </motion.div>
 
             {/* Guardian's Creed section */}
             <motion.div

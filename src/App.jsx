@@ -17,9 +17,10 @@ import StoryPage from './pages/StoryPage';
 import MedaShooterPage from './pages/MedaShooterPage';
 import SettingsPage from './pages/SettingsPage';
 import MobileRestrictedPage from './pages/MobileRestrictedPage';
+//import BlogPage from './pages/BlogPage';
 
 // Import ChatbotPage if you want to keep it accessible
-import ChatbotPage from './pages/ChatbotPage';
+//import ChatbotPage from './pages/ChatbotPage';
 
 // Mobile detection function
 const isMobileDevice = () => {
@@ -119,7 +120,8 @@ function AppContent() {
   const isFullScreenRoute = [
     '/', 
     '/meda-shooter',
-    '/story'
+    '/story',
+    '/blog'
   ].includes(location.pathname);
 
   // Desktop experience for non-mobile devices
@@ -145,11 +147,12 @@ function AppContent() {
           <Route path="/meda-shooter" element={<MedaShooterPage />} />
           <Route path="/story" element={<StoryPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/chatbot" element={<ChatbotPage />} />
+          
           {/* Hidden routes - uncomment when ready to release
           <Route path="/marketplace" element={<MarketplacePage />} />
-          <Route path="/join-resistance" element={<JoinResistanceComingSoonPage />} />
+          <Route path="/chatbot" element={<ChatbotPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/join-resistance" element={<JoinResistanceComingSoonPage />} />
           <Route path="/ai-commander" element={<AICommanderPage />} />
           */}
         </Routes>

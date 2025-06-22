@@ -236,8 +236,8 @@ const HeroSection = () => {
     }
   };
 
-  const handleJoinResistance = () => {
-    navigate('/join-resistance');
+  const handlePlayMedaShooter = () => {
+    navigate('/meda-shooter');
   };
 
   return (
@@ -404,7 +404,7 @@ const HeroSection = () => {
                 </span>
               </motion.button>
               
-              {/* Mobile JOIN THE RESISTANCE Button */}
+              {/* Mobile PLAY MEDASHOOTER Button */}
               <motion.button 
                 className="w-full relative text-lg font-orbitron font-bold rounded-lg overflow-hidden py-4 px-6"
                 style={{
@@ -414,7 +414,7 @@ const HeroSection = () => {
                   boxShadow: '0 0 20px rgba(59, 130, 246, 0.6), inset 0 0 20px rgba(59, 130, 246, 0.1)',
                   minHeight: '56px'
                 }}
-                onClick={handleJoinResistance}
+                onClick={handlePlayMedaShooter}
                 initial={{ y: 30, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -845,7 +845,7 @@ const HeroSection = () => {
                       />
                     </motion.button>
                     
-                    {/* Desktop JOIN THE RESISTANCE Button */}
+                    {/* Desktop PLAY MEDASHOOTER Button */}
                     <motion.button 
                       className="relative text-2xl font-orbitron font-bold rounded-lg overflow-hidden"
                       style={{
@@ -856,7 +856,7 @@ const HeroSection = () => {
                         color: '#FFFFFF',
                         boxShadow: '0 0 20px rgba(59, 130, 246, 0.6), inset 0 0 20px rgba(59, 130, 246, 0.1)'
                       }}
-                      onClick={handleJoinResistance}
+                      onClick={handlePlayMedaShooter}
                       whileHover={{ 
                         scale: 1.05,
                         boxShadow: "0 0 30px rgba(59, 130, 246, 0.8), inset 0 0 30px rgba(59, 130, 246, 0.15)",
