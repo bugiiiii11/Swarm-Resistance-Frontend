@@ -19,6 +19,10 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  // MINIMAL ADDITION - Only add this one line for react-unity-webgl
+  optimizeDeps: {
+    include: ['react-unity-webgl']
+  },
   build: {
     rollupOptions: {
       output: {
