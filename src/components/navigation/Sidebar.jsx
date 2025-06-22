@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 
 // Optimized Fire Particle Component - Reduced complexity
@@ -138,13 +138,21 @@ const FireEffect = () => {
   );
 };
 
-// Custom futuristic gaming icons - Updated to only include live pages
+// Futuristic gaming icons - All pages with classic design
 const FuturisticIcons = {
   Profile: () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 2L14.5 6.5L20 7L16 11L17 17L12 14.5L7 17L8 11L4 7L9.5 6.5L12 2Z" 
             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       <circle cx="12" cy="12" r="2" fill="currentColor"/>
+    </svg>
+  ),
+  ResistanceHub: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5" stroke="currentColor" strokeWidth="2"/>
+      <circle cx="12" cy="12" r="2" fill="currentColor"/>
+      <path d="M8 10L12 6L16 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M8 14L12 18L16 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
   MedaShooter: () => (
@@ -164,6 +172,33 @@ const FuturisticIcons = {
       <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
       <path d="M12 8V16M8 12H16" stroke="currentColor" strokeWidth="1" opacity="0.5"/>
     </svg>
+  ),
+  Blog: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="2"/>
+      <path d="M7 8H17M7 12H17M7 16H13" stroke="currentColor" strokeWidth="2"/>
+      <circle cx="19" cy="6" r="2" stroke="currentColor" strokeWidth="1" opacity="0.5"/>
+    </svg>
+  ),
+  AICommander: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="2"/>
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1"/>
+      <path d="M12 4V8M12 16V20M4 12H8M16 12H20" stroke="currentColor" strokeWidth="1" opacity="0.6"/>
+      <circle cx="12" cy="8" r="1" fill="currentColor" opacity="0.7"/>
+      <circle cx="16" cy="12" r="1" fill="currentColor" opacity="0.7"/>
+      <circle cx="12" cy="16" r="1" fill="currentColor" opacity="0.7"/>
+      <circle cx="8" cy="12" r="1" fill="currentColor" opacity="0.7"/>
+    </svg>
+  ),
+  TradingHub: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 7L5 2H19L21 7" stroke="currentColor" strokeWidth="2"/>
+      <path d="M3 7H21V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V7Z" stroke="currentColor" strokeWidth="2"/>
+      <circle cx="9" cy="13" r="2" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="15" cy="13" r="2" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M9 11L15 11" stroke="currentColor" strokeWidth="1" opacity="0.5"/>
+    </svg>
   )
 };
 
@@ -172,11 +207,43 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Updated navigation items - Only live pages
+  // Navigation items - All pages with classic design
   const navItems = [
-    { icon: <FuturisticIcons.Profile />, text: 'Profile', path: '/profile' },
-    { icon: <FuturisticIcons.MedaShooter />, text: 'Meda Shooter', path: '/meda-shooter' },
-    { icon: <FuturisticIcons.Lore />, text: 'Lore', path: '/story' }
+    { 
+      icon: <FuturisticIcons.Profile />, 
+      text: 'Profile', 
+      path: '/profile'
+    },
+    { 
+      icon: <FuturisticIcons.ResistanceHub />, 
+      text: 'Resistance Hub', 
+      path: '/join-resistance'
+    },
+    { 
+      icon: <FuturisticIcons.MedaShooter />, 
+      text: 'Meda Shooter', 
+      path: '/meda-shooter'
+    },
+    { 
+      icon: <FuturisticIcons.TradingHub />, 
+      text: 'Trading Hub', 
+      path: '/marketplace'
+    },
+    { 
+      icon: <FuturisticIcons.Lore />, 
+      text: 'Lore', 
+      path: '/story'
+    },
+    { 
+      icon: <FuturisticIcons.Blog />, 
+      text: 'Blog', 
+      path: '/blog'
+    },
+    { 
+      icon: <FuturisticIcons.AICommander />, 
+      text: 'AI Commander', 
+      path: '/ai-commander'
+    }
   ];
 
   // Social icons with enhanced Phoenix styling and updated links

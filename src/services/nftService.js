@@ -186,7 +186,7 @@ class NFTService {
             cardTypeSznId: cardTypeSznId, // The blockchain-fetched 4-digit number
             metadata,
             contractAddress: NFT_CONTRACTS.HEROES,
-            type: 'hero'
+            nftType: 'hero' // Changed from 'type' to 'nftType' to avoid duplicate key
           });
         } catch (tokenError) {
           console.error(`Error fetching Hero token ${i}:`, tokenError);
@@ -270,10 +270,10 @@ class NFTService {
 
           // Get weapon info using getTokenInfo method
           try {
-            const [tier, type, unused1, name, unused2] = await this.weaponsContract.getTokenInfo(tokenId);
+            const [tier, weaponTypeNum, , name] = await this.weaponsContract.getTokenInfo(tokenId);
             
             const tierNum = Number(tier);
-            const typeNum = Number(type);
+            const typeNum = Number(weaponTypeNum);
             const nameNum = Number(name);
             
             // Set tier based on number
@@ -335,13 +335,13 @@ class NFTService {
             tokenId: tokenIdNumber,
             name: weaponName,
             tier: weaponTier,
-            type: weaponType,
+            weaponType: weaponType, // Changed from 'type' to 'weaponType' to avoid duplicate key
             power: power,
             attributes: attributes,
             video: weaponVideo,
             metadata,
             contractAddress: NFT_CONTRACTS.WEAPONS,
-            type: 'weapon'
+            nftType: 'weapon' // Changed from 'type' to 'nftType' to avoid duplicate key
           });
         } catch (tokenError) {
           console.error(`Error fetching Weapon token ${i}:`, tokenError);
@@ -411,7 +411,7 @@ class NFTService {
               image: metadata.image,
               balance: balance,
               contractAddress: NFT_CONTRACTS.LANDS,
-              type: 'land'
+              nftType: 'land' // Changed from 'type' to 'nftType' to be consistent
             });
           }
         });
@@ -436,7 +436,7 @@ class NFTService {
                 image: metadata.image,
                 balance: balanceNumber,
                 contractAddress: NFT_CONTRACTS.LANDS,
-                type: 'land'
+                nftType: 'land' // Changed from 'type' to 'nftType' to be consistent
               });
             }
           } catch (individualError) {

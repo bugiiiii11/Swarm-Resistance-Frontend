@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Settings, Key, Copy, Check, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import { useWeb3Auth } from '../contexts/Web3AuthContext';
+import { useWeb3Auth } from '../contexts/useWeb3Auth';
 
 const SettingsPage = () => {
   const { user, walletAddress, web3auth, provider, isConnected } = useWeb3Auth();

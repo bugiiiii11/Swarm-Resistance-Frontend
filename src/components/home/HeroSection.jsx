@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useWeb3Auth } from '../../contexts/Web3AuthContext';
+import { useWeb3Auth } from '../../contexts/useWeb3Auth';
 
 // Mobile-optimized Background with Swarm Invasion
 const SwarmInvasionBackground = ({ isMobile }) => {

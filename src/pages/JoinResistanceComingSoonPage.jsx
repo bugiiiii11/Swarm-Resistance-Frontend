@@ -23,7 +23,7 @@ const JoinResistanceComingSoonPage = () => {
   useEffect(() => {
     if (!hasAnimated) {
       const timer = setTimeout(() => {
-        const controls = animate(count, 92, {
+        const controls = animate(count, 72, {
           duration: 2,
           ease: "easeOut",
           delay: 2 // Start after the progress bar animation begins
@@ -71,7 +71,7 @@ const JoinResistanceComingSoonPage = () => {
 
   return (
     <div className="full-screen-section relative overflow-hidden bg-void-primary" ref={sectionRef}>
-      {/* Enhanced background layers */}
+      {/* FIXED: Uniform background layers - removed problematic gradients */}
       <motion.div 
         className="absolute inset-0 w-full h-full"
         style={{ y: backgroundY }}
@@ -91,9 +91,10 @@ const JoinResistanceComingSoonPage = () => {
           }}
         />
         
-        {/* Nebula overlay */}
-        <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/30 via-transparent to-void-primary/60" />
-        <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/10 via-resistance-primary/10 to-energy-purple/10 opacity-30" />
+        {/* FIXED: Uniform nebula overlay - consistent across entire screen */}
+        <div className="absolute inset-0 bg-gradient-to-b from-void-primary via-void-secondary to-void-primary" />
+        <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/20 via-transparent to-void-primary/40" />
+        <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/5 via-resistance-primary/5 to-energy-purple/5 opacity-30" />
       </motion.div>
 
       {/* Enhanced floating particles */}
@@ -151,11 +152,11 @@ const JoinResistanceComingSoonPage = () => {
         ))}
       </motion.div>
 
-      {/* Main content - FIXED: Added md:pl-64 for sidebar spacing */}
+      {/* Main content - FIXED: Removed elements that create darker horizontal background */}
       <div className="relative z-10 min-h-screen w-full pt-16 md:pl-64">
-        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col relative">
           
-          {/* Title and subtitle section */}
+          {/* Title and subtitle section - Clean background */}
           <motion.div 
             className="text-center mb-6 pt-8"
             initial={{ opacity: 0, y: 30 }}
@@ -261,7 +262,7 @@ const JoinResistanceComingSoonPage = () => {
                   <motion.div
                     className="h-full bg-gradient-to-r from-phoenix-primary to-phoenix-light"
                     initial={{ width: 0 }}
-                    animate={{ width: "92%" }}
+                    animate={{ width: "72%" }}
                     transition={{ duration: 2, delay: 2 }}
                   />
                 </div>
@@ -270,8 +271,8 @@ const JoinResistanceComingSoonPage = () => {
               {/* Feature status */}
               <div className="grid md:grid-cols-2 gap-4">
                 {[
-                  { name: "Guardian Training Academy", status: "Complete", color: "text-success-green" },
-                  { name: "Skill Assessment Matrix", status: "Complete", color: "text-success-green" },
+                  { name: "Resistance Hub Design", status: "Complete", color: "text-success-green" },
+                  { name: "Reward system", status: "Testing", color: "text-phoenix-primary" },
                   { name: "Mission Assignment Engine", status: "Testing", color: "text-phoenix-primary" },
                   { name: "Rank Progression System", status: "Finalizing", color: "text-warning-orange" }
                 ].map((feature, index) => (

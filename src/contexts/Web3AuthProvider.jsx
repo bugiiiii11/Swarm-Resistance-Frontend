@@ -1,27 +1,12 @@
-// Refresh Meda Gas balance
-  const refreshMedaGasBalance = async () => {
-    if (walletAddress) {
-      await loadMedaGasBalance(walletAddress);
-    }
-  };import { createContext, useContext, useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Web3Auth } from "@web3auth/modal";
 import { web3AuthConfig } from '../config/web3auth.config.js';
 import { userProfileService } from '../services/userProfile.service.js';
 import { tokenService } from '../services/tokenService.js';
 import { nftService } from '../services/nftService.js';
+import { Web3AuthContext } from './Web3AuthContext.js';
 import PropTypes from 'prop-types';
-import { WalletConnectV2Adapter } from "@web3auth/wallet-connect-v2-adapter";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
-
-const Web3AuthContext = createContext(null);
-
-export const useWeb3Auth = () => {
-  const context = useContext(Web3AuthContext);
-  if (!context) {
-    throw new Error("useWeb3Auth must be used within Web3AuthProvider");
-  }
-  return context;
-};
 
 export const Web3AuthProvider = ({ children }) => {
   const [web3auth, setWeb3auth] = useState(null);
@@ -35,96 +20,9 @@ export const Web3AuthProvider = ({ children }) => {
   const [nftHoldings, setNftHoldings] = useState(null);
   const [isLoadingNFTs, setIsLoadingNFTs] = useState(false);
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const web3auth = new Web3Auth({
-          clientId: web3AuthConfig.clientId,
-          web3AuthNetwork: web3AuthConfig.web3AuthNetwork,
-          chainConfig: web3AuthConfig.chainConfig,
-          privateKeyProvider: web3AuthConfig.privateKeyProvider,
-        });
-
-        // Configure MetaMask Adapter
-        const metamaskAdapter = new MetamaskAdapter({
-          clientId: web3AuthConfig.clientId,
-          sessionTime: 3600, // 1 hour in seconds
-          web3AuthNetwork: web3AuthConfig.web3AuthNetwork,
-          chainConfig: web3AuthConfig.chainConfig,
-        });
-
-        // Configure WalletConnect V2 Adapter
-        const walletConnectV2Adapter = new WalletConnectV2Adapter({
-          adapterSettings: {
-            qrcodeModal: "walletconnect",
-            chains: ["0x89"], // Polygon
-            methods: ["eth_sendTransaction", "personal_sign"],
-          },
-          loginSettings: {
-            projectId: "2c7fa3defb38afe9156f6e4a08cf4f0f", // Get your own from https://cloud.walletconnect.com
-          },
-          clientId: web3AuthConfig.clientId,
-          web3AuthNetwork: web3AuthConfig.web3AuthNetwork,
-          chainConfig: web3AuthConfig.chainConfig,
-        });
-
-        // Configure adapters - order matters for display
-        web3auth.configureAdapter(metamaskAdapter);
-        web3auth.configureAdapter(walletConnectV2Adapter);
-
-        await web3auth.initModal();
-
-        setWeb3auth(web3auth);
-
-        // Check if user is already logged in
-        if (web3auth.connected) {
-          const web3authProvider = web3auth.provider;
-          setProvider(web3authProvider);
-          
-          const user = await web3auth.getUserInfo();
-          setUser(user);
-          
-          // Get wallet address
-          if (web3authProvider) {
-            const address = await getAccounts(web3authProvider);
-            setWalletAddress(address);
-            
-            // Initialize token service
-            await tokenService.initialize(web3authProvider);
-            
-            // Initialize NFT service
-            await nftService.initialize(web3authProvider);
-            
-            // Load user profile
-            const profile = userProfileService.getProfile(address);
-            setUserProfile(profile);
-            
-            // Load Meda Gas balance
-            await loadMedaGasBalance(address);
-            
-            // Load NFT holdings
-            await loadNFTHoldings(address);
-            
-            // Update profile with Web3Auth user info if available
-            if (user && profile) {
-              userProfileService.updateProfile(address, {
-                email: user.email || profile.email,
-                nickname: user.name || profile.nickname,
-                avatar: user.profileImage || profile.avatar,
-              });
-              setUserProfile(userProfileService.getProfile(address));
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Error initializing Web3Auth:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    init();
-  }, []);
+  // Use refs to track initialization status and prevent multiple calls
+  const isInitialized = useRef(false);
+  const isLoadingData = useRef(false);
 
   const getAccounts = async (provider) => {
     try {
@@ -140,17 +38,18 @@ export const Web3AuthProvider = ({ children }) => {
   };
 
   // Load Meda Gas balance from blockchain
-  const loadMedaGasBalance = async (address) => {
-    if (!address) {
+  const loadMedaGasBalance = useCallback(async (address, web3Provider) => {
+    if (!address || isLoadingData.current) {
       return;
     }
 
     try {
       setIsLoadingBalance(true);
+      isLoadingData.current = true;
       
       // Initialize token service if not already done
-      if (!tokenService.isInitialized() && provider) {
-        await tokenService.initialize(provider);
+      if (!tokenService.isInitialized() && web3Provider) {
+        await tokenService.initialize(web3Provider);
       }
       
       if (tokenService.isInitialized()) {
@@ -176,12 +75,13 @@ export const Web3AuthProvider = ({ children }) => {
       });
     } finally {
       setIsLoadingBalance(false);
+      isLoadingData.current = false;
     }
-  };
+  }, []);
 
   // Load NFT holdings from blockchain
-  const loadNFTHoldings = async (address) => {
-    if (!address) {
+  const loadNFTHoldings = useCallback(async (address, web3Provider) => {
+    if (!address || isLoadingData.current) {
       return;
     }
 
@@ -189,8 +89,8 @@ export const Web3AuthProvider = ({ children }) => {
       setIsLoadingNFTs(true);
       
       // Initialize NFT service if not already done
-      if (!nftService.isInitialized() && provider) {
-        await nftService.initialize(provider);
+      if (!nftService.isInitialized() && web3Provider) {
+        await nftService.initialize(web3Provider);
       }
       
       if (nftService.isInitialized()) {
@@ -210,14 +110,92 @@ export const Web3AuthProvider = ({ children }) => {
     } finally {
       setIsLoadingNFTs(false);
     }
-  };
+  }, []);
 
-  // Refresh NFT holdings
-  const refreshNFTHoldings = async () => {
-    if (walletAddress) {
-      await loadNFTHoldings(walletAddress);
+  // Initialize Web3Auth only once
+  useEffect(() => {
+    const init = async () => {
+      if (isInitialized.current) return;
+      
+      try {
+        isInitialized.current = true;
+        
+        const web3auth = new Web3Auth({
+          clientId: web3AuthConfig.clientId,
+          web3AuthNetwork: web3AuthConfig.web3AuthNetwork,
+          chainConfig: web3AuthConfig.chainConfig,
+          privateKeyProvider: web3AuthConfig.privateKeyProvider,
+        });
+
+        // Configure MetaMask Adapter
+        const metamaskAdapter = new MetamaskAdapter({
+          clientId: web3AuthConfig.clientId,
+          sessionTime: 3600,
+          web3AuthNetwork: web3AuthConfig.web3AuthNetwork,
+          chainConfig: web3AuthConfig.chainConfig,
+        });
+
+        web3auth.configureAdapter(metamaskAdapter);
+        await web3auth.initModal();
+        setWeb3auth(web3auth);
+
+        // Check if user is already logged in
+        if (web3auth.connected) {
+          const web3authProvider = web3auth.provider;
+          setProvider(web3authProvider);
+          
+          const user = await web3auth.getUserInfo();
+          setUser(user);
+          
+          if (web3authProvider) {
+            const address = await getAccounts(web3authProvider);
+            setWalletAddress(address);
+            
+            // Initialize services
+            await tokenService.initialize(web3authProvider);
+            await nftService.initialize(web3authProvider);
+            
+            // Load user profile
+            const profile = userProfileService.getProfile(address);
+            setUserProfile(profile);
+            
+            // Load data
+            await loadMedaGasBalance(address, web3authProvider);
+            await loadNFTHoldings(address, web3authProvider);
+            
+            // Update profile with Web3Auth user info
+            if (user && profile) {
+              userProfileService.updateProfile(address, {
+                email: user.email || profile.email,
+                nickname: user.name || profile.nickname,
+                avatar: user.profileImage || profile.avatar,
+              });
+              setUserProfile(userProfileService.getProfile(address));
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error initializing Web3Auth:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    init();
+  }, [loadMedaGasBalance, loadNFTHoldings]);
+
+  // Refresh functions with current provider and address
+  const refreshNFTHoldings = useCallback(async () => {
+    if (walletAddress && provider && !isLoadingData.current) {
+      await loadNFTHoldings(walletAddress, provider);
     }
-  };
+  }, [walletAddress, provider, loadNFTHoldings]);
+
+  const refreshMedaGasBalance = useCallback(async () => {
+    if (walletAddress && provider && !isLoadingData.current) {
+      await loadMedaGasBalance(walletAddress, provider);
+    }
+  }, [walletAddress, provider, loadMedaGasBalance]);
 
   const login = async () => {
     if (!web3auth) {
@@ -232,25 +210,20 @@ export const Web3AuthProvider = ({ children }) => {
       const user = await web3auth.getUserInfo();
       setUser(user);
       
-      // Get wallet address
       if (web3authProvider) {
         const address = await getAccounts(web3authProvider);
         setWalletAddress(address);
         
-        // Initialize token service
+        // Initialize services
         await tokenService.initialize(web3authProvider);
-        
-        // Initialize NFT service
         await nftService.initialize(web3authProvider);
         
-        // Load/create user profile
+        // Load user profile
         const profile = userProfileService.getProfile(address);
         
-        // Load Meda Gas balance
-        await loadMedaGasBalance(address);
-        
-        // Load NFT holdings
-        await loadNFTHoldings(address);
+        // Load data
+        await loadMedaGasBalance(address, web3authProvider);
+        await loadNFTHoldings(address, web3authProvider);
         
         // Update profile with Web3Auth user info
         if (user) {
@@ -279,7 +252,12 @@ export const Web3AuthProvider = ({ children }) => {
     }
 
     try {
-      await web3auth.logout();
+      console.log("Starting logout process...");
+      
+      // Stop any ongoing data loading
+      isLoadingData.current = false;
+      
+      // Clear state immediately
       setProvider(null);
       setUser(null);
       setWalletAddress(null);
@@ -289,16 +267,37 @@ export const Web3AuthProvider = ({ children }) => {
       setNftHoldings(null);
       setIsLoadingNFTs(false);
       
-      // Reset token service
+      // Reset services
       tokenService.reset();
-      
-      // Reset NFT service
       nftService.reset();
       
-      console.log("Logged out successfully!");
+      // Logout from Web3Auth if connected
+      if (web3auth.connected) {
+        console.log("Disconnecting from Web3Auth...");
+        await web3auth.logout();
+        console.log("Web3Auth logout completed");
+      }
+      
+      console.log("Logout completed successfully!");
     } catch (error) {
       console.error("Error during logout:", error);
-      throw error;
+      
+      // Force clear state even if logout fails
+      setProvider(null);
+      setUser(null);
+      setWalletAddress(null);
+      setUserProfile(null);
+      setMedaGasBalance(null);
+      setIsLoadingBalance(false);
+      setNftHoldings(null);
+      setIsLoadingNFTs(false);
+      
+      // Reset services
+      tokenService.reset();
+      nftService.reset();
+      
+      // Don't throw the error, just log it
+      console.log("Forced logout completed due to error");
     }
   };
 

@@ -71,7 +71,7 @@ const AICommanderPage = () => {
 
   return (
     <div className="full-screen-section relative overflow-hidden bg-void-primary" ref={sectionRef}>
-      {/* Enhanced background layers */}
+      {/* FIXED: Uniform background layers - removed problematic gradients */}
       <motion.div 
         className="absolute inset-0 w-full h-full"
         style={{ y: backgroundY }}
@@ -91,9 +91,10 @@ const AICommanderPage = () => {
           }}
         />
         
-        {/* Nebula overlay */}
-        <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/30 via-transparent to-void-primary/60" />
-        <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/10 via-resistance-primary/10 to-energy-purple/10 opacity-30" />
+        {/* FIXED: Uniform nebula overlay - consistent across entire screen */}
+        <div className="absolute inset-0 bg-gradient-to-b from-void-primary via-void-secondary to-void-primary" />
+        <div className="absolute inset-0 bg-gradient-radial from-cosmic-purple/20 via-transparent to-void-primary/40" />
+        <div className="absolute inset-0 bg-gradient-conic from-phoenix-primary/5 via-resistance-primary/5 to-energy-purple/5 opacity-30" />
       </motion.div>
 
       {/* Enhanced floating particles */}
@@ -151,11 +152,11 @@ const AICommanderPage = () => {
         ))}
       </motion.div>
 
-      {/* Main content */}
+      {/* Main content - FIXED: Removed elements that create darker horizontal background */}
       <div className="relative z-10 min-h-screen w-full pt-16 md:pl-64">
-        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col relative">
           
-          {/* Title and subtitle section */}
+          {/* Title and subtitle section - Clean background */}
           <motion.div 
             className="text-center mb-6 pt-8"
             initial={{ opacity: 0, y: 30 }}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wallet, Menu, X, ChevronDown, LogOut, User, Settings, Copy, Check, Home } from 'lucide-react'; // Added Home import
-import { useWeb3Auth } from '../../contexts/Web3AuthContext';
+import { useWeb3Auth } from '../../contexts/useWeb3Auth';
 import HologramTransition from '../effects/HologramTransition';
 
 // Page navigation items for hamburger menu - Updated with Home

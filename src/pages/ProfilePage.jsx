@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef  } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Trophy, Zap, Edit2, Save, X, Calendar, Shield, Sword, MapPin, RefreshCw, Copy, Check, Wallet } from 'lucide-react';
-import { useWeb3Auth } from '../contexts/Web3AuthContext';
+import { useWeb3Auth } from '../contexts/useWeb3Auth';
 import { RANKS } from '../services/userProfile.service';
 
 const ProfilePage = () => {
@@ -912,7 +912,6 @@ const ProfilePage = () => {
                       const shouldShowImage = hero.image && !hasImageError;
                       
                       // Use the cardTypeSznId from the NFT service (already fetched from blockchain)
-                      const cardTypeSznId = hero.cardTypeSznId || 'Unknown';
                       const heroRarity = hero.cardTypeSznId ? getHeroRarityFromCardType(hero.cardTypeSznId) : 'Unknown';
                       
                       const totalPower = hero.attributes 

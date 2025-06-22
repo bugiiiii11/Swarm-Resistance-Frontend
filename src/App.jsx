@@ -3,24 +3,29 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import './App.css';
 
 // Import Web3Auth Provider
-import { Web3AuthProvider } from './contexts/Web3AuthContext';
+import { Web3AuthProvider } from './contexts/Web3AuthProvider';
 
 // Import Components
 import Sidebar from './components/navigation/Sidebar';
 import TopBar from './components/navigation/TopBar';
 import OptimizedGpuBackground from './components/effects/OptimizedGpuBackground';
 
-// Import Live Pages Only
+// Import Live Pages
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import StoryPage from './pages/StoryPage';
 import MedaShooterPage from './pages/MedaShooterPage';
 import SettingsPage from './pages/SettingsPage';
 import MobileRestrictedPage from './pages/MobileRestrictedPage';
-//import BlogPage from './pages/BlogPage';
+
+// Import Coming Soon Pages
+import BlogPage from './pages/BlogPage';
+import AICommanderPage from './pages/AICommanderPage';
+import JoinResistanceComingSoonPage from './pages/JoinResistanceComingSoonPage';
+import MarketplacePage from './pages/MarketplacePage';
 
 // Import ChatbotPage if you want to keep it accessible
-//import ChatbotPage from './pages/ChatbotPage';
+// import ChatbotPage from './pages/ChatbotPage';
 
 // Mobile detection function
 const isMobileDevice = () => {
@@ -142,18 +147,21 @@ function AppContent() {
           : 'md:ml-64 pt-16 pb-20 px-4 sm:px-6 md:px-8'
       }`}>
         <Routes>
+          {/* Live Pages */}
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/meda-shooter" element={<MedaShooterPage />} />
           <Route path="/story" element={<StoryPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           
-          {/* Hidden routes - uncomment when ready to release
-          <Route path="/marketplace" element={<MarketplacePage />} />
-          <Route path="/chatbot" element={<ChatbotPage />} />
-          <Route path="/blog" element={<BlogPage />} />
+          {/* Coming Soon Pages - Now Active */}
           <Route path="/join-resistance" element={<JoinResistanceComingSoonPage />} />
+          <Route path="/blog" element={<BlogPage />} />
           <Route path="/ai-commander" element={<AICommanderPage />} />
+          <Route path="/marketplace" element={<MarketplacePage />} />
+          
+          {/* Hidden/Future routes - uncomment when ready to release
+          <Route path="/chatbot" element={<ChatbotPage />} />
           */}
         </Routes>
       </main>
