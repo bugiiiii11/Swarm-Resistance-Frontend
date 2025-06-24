@@ -1,8 +1,7 @@
 import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from "@web3auth/base";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 
-// Get your client ID from https://dashboard.web3auth.io
-const clientId = "BOCzzfHpvqRAcEwjN7P37ChbxlCOXEv-5wETWpEyY2H73d9fUC4ATOI9cq5b11YcOZxPTxgaE3O1zyfBiZySei0"; // Replace with your actual client ID
+const clientId = "BOCzzfHpvqRAcEwjN7P37ChbxlCOXEv-5wETWpEyY2H73d9fUC4ATOI9cq5b11YcOZxPTxgaE3O1zyfBiZySei0";
 
 const chainConfig = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -14,18 +13,20 @@ const chainConfig = {
   tickerName: "Polygon",
 };
 
-// Use SAPPHIRE_MAINNET for production with real users
+// Use SAPPHIRE_MAINNET for production
 const web3AuthNetwork = WEB3AUTH_NETWORK.SAPPHIRE_MAINNET;
 
 const privateKeyProvider = new EthereumPrivateKeyProvider({
   config: { chainConfig },
 });
 
-// Base plan configuration - NO customization allowed
+// Basic configuration for FREE plan - NO UI customization allowed
 export const web3AuthConfig = {
   clientId,
   web3AuthNetwork,
   chainConfig,
   privateKeyProvider,
-  // Remove ALL uiConfig for base plan
+  // NO modalConfig for free plan
+  // NO uiConfig for free plan
+  // NO adapters config for free plan
 };
