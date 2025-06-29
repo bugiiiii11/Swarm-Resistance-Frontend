@@ -173,6 +173,29 @@ const FuturisticIcons = {
       <path d="M12 8V16M8 12H16" stroke="currentColor" strokeWidth="1" opacity="0.5"/>
     </svg>
   ),
+  GuardianManual: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Outer hexagonal frame */}
+      <polygon points="12,1 21,6 21,18 12,23 3,18 3,6" stroke="currentColor" strokeWidth="2" fill="none"/>
+      {/* Inner shield pattern */}
+      <polygon points="12,4 18,7.5 18,16.5 12,20 6,16.5 6,7.5" stroke="currentColor" strokeWidth="1.5" opacity="0.7"/>
+      {/* Central core */}
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+      {/* Data streams/lines */}
+      <path d="M9 9L12 6L15 9" stroke="currentColor" strokeWidth="1" opacity="0.6"/>
+      <path d="M9 15L12 18L15 15" stroke="currentColor" strokeWidth="1" opacity="0.6"/>
+      <path d="M6 12H9M15 12H18" stroke="currentColor" strokeWidth="1" opacity="0.6"/>
+      {/* Central energy dot */}
+      <circle cx="12" cy="12" r="1" fill="currentColor"/>
+      {/* Corner energy nodes */}
+      <circle cx="12" cy="5" r="0.5" fill="currentColor" opacity="0.8"/>
+      <circle cx="17" cy="8.5" r="0.5" fill="currentColor" opacity="0.8"/>
+      <circle cx="17" cy="15.5" r="0.5" fill="currentColor" opacity="0.8"/>
+      <circle cx="12" cy="19" r="0.5" fill="currentColor" opacity="0.8"/>
+      <circle cx="7" cy="15.5" r="0.5" fill="currentColor" opacity="0.8"/>
+      <circle cx="7" cy="8.5" r="0.5" fill="currentColor" opacity="0.8"/>
+    </svg>
+  ),
   Blog: () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="2"/>
@@ -207,7 +230,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Navigation items - All pages with classic design
+  // Navigation items - All pages with classic design including Guardian Manual
   const navItems = [
     { 
       icon: <FuturisticIcons.Profile />, 
@@ -233,6 +256,11 @@ const Sidebar = () => {
       icon: <FuturisticIcons.Lore />, 
       text: 'Lore', 
       path: '/story'
+    },
+    { 
+      icon: <FuturisticIcons.GuardianManual />, 
+      text: 'Guardian Manual', 
+      path: '/whitepaper'
     },
     { 
       icon: <FuturisticIcons.Blog />, 
@@ -314,7 +342,7 @@ const Sidebar = () => {
       </motion.div>
       
       {/* Navigation Links with enhanced futuristic icons */}
-      <nav className="mt-6 px-3 flex-grow relative z-10">
+      <nav className="mt-6 px-3 flex-grow relative z-10 overflow-y-auto">
         {navItems.map((item, index) => (
           <motion.div
             key={index} 

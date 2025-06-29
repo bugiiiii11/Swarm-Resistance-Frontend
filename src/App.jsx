@@ -17,6 +17,7 @@ import StoryPage from './pages/StoryPage';
 import MedaShooterPage from './pages/MedaShooterPage';
 import SettingsPage from './pages/SettingsPage';
 import MobileRestrictedPage from './pages/MobileRestrictedPage';
+import GuardianManualPage from './pages/GuardianManualPage';
 
 // Import Coming Soon Pages
 import BlogPage from './pages/BlogPage';
@@ -126,7 +127,8 @@ function AppContent() {
     '/', 
     '/meda-shooter',
     '/story',
-    '/blog'
+    '/blog',
+    '/whitepaper'
   ].includes(location.pathname);
 
   // Desktop experience for non-mobile devices
@@ -152,6 +154,7 @@ function AppContent() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/meda-shooter" element={<MedaShooterPage />} />
           <Route path="/story" element={<StoryPage />} />
+          <Route path="/whitepaper" element={<GuardianManualPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           
           {/* Coming Soon Pages - Now Active */}
