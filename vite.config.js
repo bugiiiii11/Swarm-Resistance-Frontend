@@ -14,12 +14,15 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 3000
+    port: 3000,
+    // Add CORS headers for development
+    cors: true
   },
   define: {
     global: 'globalThis',
+    // Ensure environment variables are available
+    'process.env': {}
   },
-  // MINIMAL ADDITION - Only add this one line for react-unity-webgl
   optimizeDeps: {
     include: ['react-unity-webgl']
   },
@@ -33,6 +36,16 @@ export default defineConfig({
           return '[name].[hash].[ext]'
         }
       }
-    }
+    },
+    // Ensure source maps for better debugging
+    sourcemap: false, // Set to true if you need debugging in production
+    // Optimize build for production
+    minify: 'terser',
+    target: 'esnext'
+  },
+  // Preview configuration for Vercel
+  preview: {
+    port: 3000,
+    cors: true
   }
 })
