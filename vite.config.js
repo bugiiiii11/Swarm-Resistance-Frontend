@@ -15,12 +15,10 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
-    // Add CORS headers for development
     cors: true
   },
   define: {
     global: 'globalThis',
-    // Ensure environment variables are available
     'process.env': {}
   },
   optimizeDeps: {
@@ -37,13 +35,14 @@ export default defineConfig({
         }
       }
     },
-    // Ensure source maps for better debugging
-    sourcemap: false, // Set to true if you need debugging in production
-    // Optimize build for production
-    minify: 'terser',
-    target: 'esnext'
+    // Fix for Vercel deployment
+    sourcemap: false,
+    // Use esbuild instead of terser for better compatibility
+    minify: 'esbuild',
+    target: 'esnext',
+    // Reduce chunk size warnings
+    chunkSizeWarningLimit: 1000
   },
-  // Preview configuration for Vercel
   preview: {
     port: 3000,
     cors: true
