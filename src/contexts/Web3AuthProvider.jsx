@@ -268,7 +268,7 @@ const switchToPolygon = useCallback(async () => {
         throw new Error('MetaMask is processing a network request. Please check MetaMask and complete the network switch, then try connecting again.');
       } else {
         // Wait for the pending request to complete
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 3000));537
         
         // Check if we're now on Polygon
         const currentChainId = await getCurrentNetwork();

@@ -368,7 +368,7 @@ const TopBar = () => {
                   className={`relative text-lg lg:text-xl font-orbitron font-bold transition-all duration-300 ${
                     activeSection === item.id && location.pathname === '/' 
                       ? 'text-phoenix-primary text-shadow-phoenix' 
-                      : 'text-stellar-white hover:text-phoenix-light'
+                      : 'text-stellar-white hover:text-phoenix-primary'
                   } ${isWarping ? 'opacity-50 cursor-not-allowed' : ''}`}
                   whileHover={{ 
                     y: isWarping ? 0 : -3,
@@ -519,7 +519,7 @@ const TopBar = () => {
                           <div className="flex items-center gap-1">
                             <Wallet size={12} className="text-resistance-light" />
                             <span className="text-xs text-stellar-white">
-                              {parseFloat(balance).toFixed(4)} {isOnPolygon ? 'MATIC' : 'ETH'}
+                              {parseFloat(balance).toFixed(4)} {isOnPolygon ? 'POL' : 'ETH'}
                             </span>
                           </div>
                         </div>
@@ -564,7 +564,7 @@ const TopBar = () => {
                       </Link>
                       <Link 
                         to="/settings" 
-                        className="flex items-center gap-2 px-4 py-2 text-sm lg:text-lg hover:bg-resistance-primary/10 hover:text-resistance-light transition-all"
+                        className="flex items-center gap-2 px-4 py-2 text-sm lg:text-lg hover:bg-resistance-primary/10 hover:text-phoenix-primary transition-all"
                         onClick={() => setDropdownOpen(false)}
                       >
                         <Settings size={16} />

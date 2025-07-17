@@ -17,10 +17,10 @@ export default defineConfig({
     port: 3000,
     cors: true
   },
-  define: {
-    global: 'globalThis',
-    'process.env': {}
-  },
+define: {
+  global: 'globalThis',
+  // Remove this line: 'process.env': {}
+},
   optimizeDeps: {
     include: ['react-unity-webgl']
   },
