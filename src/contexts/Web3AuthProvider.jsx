@@ -268,7 +268,7 @@ const switchToPolygon = useCallback(async () => {
         throw new Error('MetaMask is processing a network request. Please check MetaMask and complete the network switch, then try connecting again.');
       } else {
         // Wait for the pending request to complete
-        await new Promise(resolve => setTimeout(resolve, 3000));537
+        await new Promise(resolve => setTimeout(resolve, 3000));
         
         // Check if we're now on Polygon
         const currentChainId = await getCurrentNetwork();
@@ -554,7 +554,7 @@ const switchToPolygon = useCallback(async () => {
     }
   }, []);
 
-  // Load NFT holdings from blockchain
+  // Load NFT holdings from blockchain - KEPT FOR BACKWARD COMPATIBILITY
   const loadNFTHoldings = useCallback(async (address, web3Provider) => {
     if (!address || isLoadingData.current) {
       return;
@@ -986,6 +986,7 @@ const switchToPolygon = useCallback(async () => {
     return null;
   };
 
+  // SURGICAL CHANGE: Remove NFT-related exports from context value
   const value = {
     web3auth,
     provider,
@@ -993,12 +994,12 @@ const switchToPolygon = useCallback(async () => {
     walletAddress,
     userProfile,
     medaGasBalance,
-    nftHoldings,
+    // nftHoldings,           // REMOVED - ProfilePage will handle independently
     currentNetwork,
     isOnPolygon,
     isLoading,
     isLoadingBalance,
-    isLoadingNFTs,
+    // isLoadingNFTs,         // REMOVED - ProfilePage will handle independently
     login,
     logout,
     getUserInfo,
@@ -1006,7 +1007,7 @@ const switchToPolygon = useCallback(async () => {
     updateUserProfile,
     addMedaGas,
     refreshMedaGasBalance,
-    refreshNFTHoldings,
+    // refreshNFTHoldings,    // REMOVED - ProfilePage will handle independently
     isConnected: !!walletAddress,
     // Network switching functions for manual use
     switchToPolygon,
