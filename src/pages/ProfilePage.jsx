@@ -49,9 +49,13 @@ const ProfilePage = () => {
   const starsY = useTransform(scrollYProgress, [0, 1], ['0%', '-20%']);
   const particlesY = useTransform(scrollYProgress, [0, 1], ['0%', '15%']);
 
-  // Helper function to normalize weapon names for video paths
-  const normalizeWeaponName = (weaponName) => {
-    return weaponName.toLowerCase().replace(/\s+/g, '-');
+  // Helper function to generate weapon filename from metadata
+  const generateWeaponFilename = (weapon) => {
+    const tier = weapon.metadata?.weapon_tier || 1;
+    const type = weapon.metadata?.weapon_type || 1;
+    const category = weapon.metadata?.weapon_subtype || 1;
+    
+    return `${tier}${type}${category}`;
   };
 
   // Helper function to determine rarity based on season_card_id
@@ -1104,7 +1108,7 @@ const ProfilePage = () => {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {nftData.weapons.map((weapon) => {
                         const totalPower = weapon.security + weapon.anonymity + weapon.innovation;
-                        const weaponVideo = `/${normalizeWeaponName(weapon.weapon_name)}.mp4`;
+                        const weaponVideo = `/${generateWeaponFilename(weapon)}.mp4`;
                         
                         // Determine tier based on metadata
                         let weaponTier = 'Tier 1';
