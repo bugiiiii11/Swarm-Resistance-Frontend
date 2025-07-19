@@ -24,10 +24,13 @@ const ProfilePage = () => {
   // Local state for NFT data - independent from Web3AuthProvider
   const [heroesData, setHeroesData] = useState([]);
   const [weaponsData, setWeaponsData] = useState([]);
+  const [landsData, setLandsData] = useState([]);
   const [isLoadingHeroes, setIsLoadingHeroes] = useState(true);
   const [isLoadingWeapons, setIsLoadingWeapons] = useState(true);
+  const [isLoadingLands, setIsLoadingLands] = useState(true);
   const [heroesError, setHeroesError] = useState(null);
   const [weaponsError, setWeaponsError] = useState(null);
+  const [landsError, setLandsError] = useState(null);
 
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('heroes');
@@ -115,15 +118,40 @@ const ProfilePage = () => {
     }
   }, []);
 
+  // Fetch lands from backend API
+  const fetchLands = useCallback(async (address) => {
+    try {
+      setIsLoadingLands(true);
+      setLandsError(null);
+      
+      const response = await fetch(`${BACKEND_BASE_URL}/api/v1/land_tickets/user_land_tickets/?address=${address}`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch lands: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setLandsData(data || []);
+      
+    } catch (error) {
+      console.error('Error fetching lands:', error);
+      setLandsError(error.message);
+      setLandsData([]);
+    } finally {
+      setIsLoadingLands(false);
+    }
+  }, []);
+
   // Refresh NFT data
   const refreshNFTData = useCallback(async () => {
     if (walletAddress) {
       await Promise.all([
         fetchHeroes(walletAddress),
-        fetchWeapons(walletAddress)
+        fetchWeapons(walletAddress),
+        fetchLands(walletAddress)
       ]);
     }
-  }, [walletAddress, fetchHeroes, fetchWeapons]);
+  }, [walletAddress, fetchHeroes, fetchWeapons, fetchLands]);
 
   // Load NFT data when wallet is connected
   useEffect(() => {
@@ -434,15 +462,15 @@ const ProfilePage = () => {
 
   // Get NFT data from local state (backend API)
   const getNFTData = () => {
-    const isLoading = isLoadingHeroes || isLoadingWeapons;
+    const isLoading = isLoadingHeroes || isLoadingWeapons || isLoadingLands;
     
     return {
       heroes: heroesData,
       weapons: weaponsData,
-      lands: [], // No lands endpoint in backend yet
+      lands: landsData,
       heroesCount: heroesData.length,
       weaponsCount: weaponsData.length,
-      landsCount: 0,
+      landsCount: landsData.reduce((sum, land) => sum + (land.balance > 0 ? land.balance : 0), 0),
       isLoading: isLoading,
       isReal: true // Always real data from backend
     };
@@ -470,6 +498,12 @@ const ProfilePage = () => {
         return 'text-nebula-pink border-nebula-pink/30 bg-nebula-pink/10';
       case 'Collectible':
         return 'text-neon-cyan border-neon-cyan/30 bg-neon-cyan/10';
+      case 'Legendary':
+        return 'text-meda-gold border-meda-gold/30 bg-meda-gold/10';
+      case 'Rare':
+        return 'text-energy-purple border-energy-purple/30 bg-energy-purple/10';
+      case 'Common':
+        return 'text-gray-400 border-gray-400/30 bg-gray-400/10';
       default:
         return 'text-gray-400 border-gray-400/30 bg-gray-400/10';
     }
@@ -802,7 +836,9 @@ const ProfilePage = () => {
                         </div>
                         <div className="text-sm text-gray-400 flex items-center justify-center gap-1">
                           Lands
-                          <div className="w-2 h-2 bg-gray-500 rounded-full" title="Not available in backend" />
+                          {nftData.isReal && !nftData.isLoading && (
+                            <div className="w-2 h-2 bg-nebula-pink rounded-full" title="Live backend data" />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1242,18 +1278,123 @@ const ProfilePage = () => {
                     <h3 className="text-2xl font-bold">NFT Lands</h3>
                     <div className="flex items-center gap-4">
                       <div className="text-gray-400">
-                        {nftData.landsCount} Territories
+                        {nftData.isLoading ? '...' : `${nftData.landsCount} Territories`}
                       </div>
+                      {nftData.isReal && !nftData.isLoading && (
+                        <motion.button
+                          onClick={refreshNFTData}
+                          className="text-gray-400 hover:text-nebula-pink transition-colors p-2"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          title="Refresh Lands"
+                        >
+                          <RefreshCw size={20} />
+                        </motion.button>
+                      )}
                     </div>
                   </div>
                   
-                  <div className="text-center py-12">
-                    <MapPin size={64} className="text-gray-500 mx-auto mb-4" />
-                    <p className="text-gray-400 mb-4">Lands data not available in backend</p>
-                    <p className="text-sm text-gray-500">
-                      Land NFT data is currently not available through the backend API
-                    </p>
-                  </div>
+                  {nftData.isLoading ? (
+                    <div className="text-center py-12">
+                      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-nebula-pink mx-auto mb-4"></div>
+                      <p className="text-xl text-gray-400">Loading Land Tickets from backend...</p>
+                    </div>
+                  ) : nftData.lands.length > 0 && nftData.lands.some(land => land.balance > 0) ? (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {nftData.lands.filter(land => land.balance > 0).map((land) => {
+                        // Calculate power based on rarity
+                        let landPower = 100; // Default for Common
+                        if (land.rarity === 'Rare') landPower = 300;
+                        if (land.rarity === 'Legendary') landPower = 700;
+                        
+                        return (
+                          <motion.div
+                            key={land.id || land.token_id}
+                            className="bg-space-blue/30 rounded-xl border border-cosmic-purple/30 overflow-hidden"
+                            whileHover={{ scale: 1.02, borderColor: 'rgba(255, 182, 30, 0.5)' }}
+                          >
+                            {/* Land Image - Full Display */}
+                            <div className="aspect-[637/1000] bg-gradient-to-br from-cosmic-purple to-space-blue flex items-center justify-center overflow-hidden">
+                              {land.image ? (
+                                <img 
+                                  src={land.image} 
+                                  alt={land.name}
+                                  className="w-full h-full object-contain"
+                                  onError={(e) => {
+                                    // Fallback to icon if image fails to load
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.style.display = 'flex';
+                                  }}
+                                />
+                              ) : null}
+                              <div 
+                                className="w-full h-full flex items-center justify-center"
+                                style={{ display: land.image ? 'none' : 'flex' }}
+                              >
+                                <MapPin size={48} className="text-nebula-pink" />
+                              </div>
+                            </div>
+                            
+                            {/* Land Info Below Image */}
+                            <div className="p-4 space-y-4">
+                              
+                              {/* Power - Top Center with enhanced styling */}
+                              <div className="text-center mb-4">
+                                <motion.div 
+                                  className="inline-flex items-center gap-2 glassmorphism px-6 py-3 rounded-xl border border-energy-green/40"
+                                  whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(34, 197, 94, 0.4)' }}
+                                >
+                                  <Zap size={20} className="text-energy-green" />
+                                  <span className="text-2xl font-bold text-energy-green font-orbitron">
+                                    Power {landPower}
+                                  </span>
+                                </motion.div>
+                              </div>
+                              
+                              {/* Land Name - Center */}
+                              <div className="text-center mb-2">
+                                <h4 className="text-lg font-bold text-stellar-white">{land.name}</h4>
+                              </div>
+                              
+                              {/* Bottom Row - Enhanced with better spacing and styling */}
+                              <div className="flex justify-between items-center">
+                                <motion.span 
+                                  className={`text-sm px-3 py-1.5 rounded-full border font-medium ${getRarityColor(land.rarity)}`}
+                                  whileHover={{ scale: 1.05 }}
+                                >
+                                  {land.rarity}
+                                </motion.span>
+                                <div className="text-right">
+                                  <span className="text-sm text-gray-400">
+                                    Land tickets: {land.balance}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <MapPin size={64} className="text-gray-500 mx-auto mb-4" />
+                      <p className="text-gray-400 mb-4">No land tickets detected</p>
+                      <p className="text-sm text-gray-500">
+                        Your wallet does not contain any Land NFTs from the resistance collection
+                      </p>
+                      {landsError && (
+                        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                          <p className="text-red-400 text-sm">Error loading Land Tickets: {landsError}</p>
+                        </div>
+                      )}
+                      {/* Check if all lands have -1 balance (blockchain error) */}
+                      {!landsError && nftData.lands.length > 0 && nftData.lands.every(land => land.balance === -1) && (
+                        <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                          <p className="text-yellow-400 text-sm">Connection error: Unable to fetch land balances from blockchain</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>
