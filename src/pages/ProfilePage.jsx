@@ -493,17 +493,17 @@ const ProfilePage = () => {
   const getRarityColor = (rarity) => {
     switch (rarity) {
       case 'Revolution':
-        return 'text-meda-gold border-meda-gold/30 bg-meda-gold/10';
-      case 'Legacy':
         return 'text-nebula-pink border-nebula-pink/30 bg-nebula-pink/10';
-      case 'Collectible':
+      case 'Legacy':
         return 'text-neon-cyan border-neon-cyan/30 bg-neon-cyan/10';
-      case 'Legendary':
+      case 'Collectible':
         return 'text-meda-gold border-meda-gold/30 bg-meda-gold/10';
-      case 'Rare':
+      case 'Legendary':
         return 'text-energy-purple border-energy-purple/30 bg-energy-purple/10';
+      case 'Rare':
+        return 'text-meda-gold border-meda-gold/30 bg-meda-gold/10';
       case 'Common':
-        return 'text-gray-400 border-gray-400/30 bg-gray-400/10';
+        return 'text-neon-cyan border-neon-cyan/30 bg-neon-cyan/10';
       default:
         return 'text-gray-400 border-gray-400/30 bg-gray-400/10';
     }
@@ -1045,33 +1045,33 @@ const ProfilePage = () => {
                                 </div>
                                 <div className="flex justify-center gap-2">
                                   <motion.div 
-                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-blue-400/30 text-center min-w-[60px]"
-                                    whileHover={{ scale: 1.05, borderColor: 'rgba(96, 165, 250, 0.6)' }}
+                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-orange-400/30 text-center min-w-[60px]"
+                                    whileHover={{ scale: 1.05, borderColor: 'rgba(251, 146, 60, 0.6)' }}
                                     title="Security"
                                   >
-                                    <div className="text-xl font-bold text-blue-400">{hero.metadata.sec}</div>
+                                    <div className="text-xl font-bold text-orange-400">{hero.metadata.sec}</div>
                                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                                      <div className="w-2 h-2 bg-blue-400 rounded-full opacity-60"></div>
+                                      <div className="w-2 h-2 bg-orange-400 rounded-full opacity-60"></div>
                                     </div>
                                   </motion.div>
                                   <motion.div 
-                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-purple-400/30 text-center min-w-[60px]"
-                                    whileHover={{ scale: 1.05, borderColor: 'rgba(167, 139, 250, 0.6)' }}
+                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-orange-400/30 text-center min-w-[60px]"
+                                    whileHover={{ scale: 1.05, borderColor: 'rgba(251, 146, 60, 0.6)' }}
                                     title="Anonymity"
                                   >
-                                    <div className="text-xl font-bold text-purple-400">{hero.metadata.ano}</div>
+                                    <div className="text-xl font-bold text-orange-400">{hero.metadata.ano}</div>
                                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                                      <div className="w-2 h-2 bg-purple-400 rounded-full opacity-60"></div>
+                                      <div className="w-2 h-2 bg-orange-400 rounded-full opacity-60"></div>
                                     </div>
                                   </motion.div>
                                   <motion.div 
-                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-cyan-400/30 text-center min-w-[60px]"
-                                    whileHover={{ scale: 1.05, borderColor: 'rgba(34, 211, 238, 0.6)' }}
+                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-orange-400/30 text-center min-w-[60px]"
+                                    whileHover={{ scale: 1.05, borderColor: 'rgba(251, 146, 60, 0.6)' }}
                                     title="Innovation"
                                   >
-                                    <div className="text-xl font-bold text-cyan-400">{hero.metadata.inn}</div>
+                                    <div className="text-xl font-bold text-orange-400">{hero.metadata.inn}</div>
                                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                                      <div className="w-2 h-2 bg-cyan-400 rounded-full opacity-60"></div>
+                                      <div className="w-2 h-2 bg-orange-400 rounded-full opacity-60"></div>
                                     </div>
                                   </motion.div>
                                 </div>
@@ -1204,13 +1204,13 @@ const ProfilePage = () => {
                                 </div>
                                 <div className="flex justify-center gap-2">
                                   <motion.div 
-                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-red-400/30 text-center min-w-[60px]"
-                                    whileHover={{ scale: 1.05, borderColor: 'rgba(239, 68, 68, 0.6)' }}
+                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-orange-400/30 text-center min-w-[60px]"
+                                    whileHover={{ scale: 1.05, borderColor: 'rgba(251, 146, 60, 0.6)' }}
                                     title="Security"
                                   >
-                                    <div className="text-xl font-bold text-red-400">{weapon.security}</div>
+                                    <div className="text-xl font-bold text-orange-400">{weapon.security}</div>
                                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                                      <div className="w-2 h-2 bg-red-400 rounded-full opacity-60"></div>
+                                      <div className="w-2 h-2 bg-orange-400 rounded-full opacity-60"></div>
                                     </div>
                                   </motion.div>
                                   <motion.div 
@@ -1224,13 +1224,13 @@ const ProfilePage = () => {
                                     </div>
                                   </motion.div>
                                   <motion.div 
-                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-yellow-400/30 text-center min-w-[60px]"
-                                    whileHover={{ scale: 1.05, borderColor: 'rgba(250, 204, 21, 0.6)' }}
+                                    className="relative glassmorphism px-4 py-3 rounded-lg border border-orange-400/30 text-center min-w-[60px]"
+                                    whileHover={{ scale: 1.05, borderColor: 'rgba(251, 146, 60, 0.6)' }}
                                     title="Innovation"
                                   >
-                                    <div className="text-xl font-bold text-yellow-400">{weapon.innovation}</div>
+                                    <div className="text-xl font-bold text-orange-400">{weapon.innovation}</div>
                                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                                      <div className="w-2 h-2 bg-yellow-400 rounded-full opacity-60"></div>
+                                      <div className="w-2 h-2 bg-orange-400 rounded-full opacity-60"></div>
                                     </div>
                                   </motion.div>
                                 </div>
