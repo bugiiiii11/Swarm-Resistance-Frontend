@@ -9,6 +9,7 @@ import { Web3AuthProvider } from './contexts/Web3AuthProvider';
 import Sidebar from './components/navigation/Sidebar';
 import TopBar from './components/navigation/TopBar';
 import OptimizedGpuBackground from './components/effects/OptimizedGpuBackground';
+import NeuralNetworkSync from './components/effects/NeuralNetworkSync';
 
 // Import Live Pages
 import HomePage from './pages/HomePage';
@@ -61,21 +62,30 @@ function AppContent() {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
 
   // Check if device is mobile on mount and resize
   useEffect(() => {
     const checkDevice = () => {
       const mobile = isMobileDevice();
       setIsMobile(mobile);
-      setIsChecking(false);
+      setIsChecking(false); // Mark compatibility check as done
     };
 
     // Initial check
     checkDevice();
 
+    // Ensure minimum loading duration (2.8s to match our animation)
+    const minLoadingTimer = setTimeout(() => {
+      setIsLoadingComplete(true);
+    }, 2800);
+
     // Listen for resize events (orientation changes, etc.)
     const handleResize = () => {
-      checkDevice();
+      if (!isChecking) { // Only update if not in loading state
+        const mobile = isMobileDevice();
+        setIsMobile(mobile);
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -84,8 +94,9 @@ function AppContent() {
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
+      clearTimeout(minLoadingTimer);
     };
-  }, []);
+  }, [isChecking]);
 
   useEffect(() => {
     // Detect if device might have performance issues
@@ -101,13 +112,16 @@ function AppContent() {
     }
   }, []);
 
-  // Show loading while checking device type
-  if (isChecking) {
+  // Show loading while checking device type OR during minimum loading duration
+  if (isChecking || !isLoadingComplete) {
     return (
-      <div className="min-h-screen bg-void-primary flex items-center justify-center">
-        <div className="text-phoenix-primary text-xl font-orbitron">
-          Scanning Device Compatibility...
-        </div>
+      <div className="min-h-screen bg-void-primary relative">
+        <OptimizedGpuBackground />
+        <NeuralNetworkSync 
+          isActive={true} 
+          onComplete={() => {}} // No action needed, will auto-complete when isChecking becomes false
+          direction="forward"
+        />
       </div>
     );
   }

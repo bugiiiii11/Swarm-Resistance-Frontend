@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wallet, Menu, X, ChevronDown, LogOut, User, Settings, Copy, Check, Home, AlertTriangle } from 'lucide-react';
 import { useWeb3Auth } from '../../contexts/useWeb3Auth';
-import HologramTransition from '../effects/HologramTransition';
 
 // Page navigation items for hamburger menu
 const pageItems = [
@@ -64,7 +63,7 @@ const TopBar = () => {
   
   // Warp effect state
   const [isWarping, setIsWarping] = useState(false);
-  const [warpDirection, setWarpDirection] = useState('forward');
+
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -240,29 +239,23 @@ const TopBar = () => {
     triggerSectionNavigation(sectionId);
   };
 
-  const triggerSectionNavigation = (sectionId) => {
-    console.log('Triggering section navigation to:', sectionId);
-    
-    const currentIndex = sectionItems.findIndex(item => item.id === activeSection);
-    const targetIndex = sectionItems.findIndex(item => item.id === sectionId);
-    const direction = targetIndex > currentIndex ? 'forward' : 'backward';
-    
-    setActiveSection(sectionId);
-    setWarpDirection(direction);
-    setIsWarping(true);
-    
-    console.log('Dispatching warp navigation event');
-    
-    window.dispatchEvent(new CustomEvent('warpNavigation', { 
-      detail: { section: sectionId } 
-    }));
-  };
-
-  // Handle warp completion
-  const handleWarpComplete = () => {
-    console.log('Warp transition completed');
+const triggerSectionNavigation = (sectionId) => {
+  console.log('Triggering section navigation to:', sectionId);
+  
+  setActiveSection(sectionId);
+  setIsWarping(true);
+  
+  console.log('Dispatching warp navigation event');
+  
+  window.dispatchEvent(new CustomEvent('warpNavigation', { 
+    detail: { section: sectionId } 
+  }));
+  
+  // Reset warping state after section transition completes
+  setTimeout(() => {
     setIsWarping(false);
-  };
+  }, 1000);
+};
 
   // Enhanced login with better error handling
   const handleLogin = async () => {
@@ -295,7 +288,11 @@ const TopBar = () => {
   return (
     <>
       <motion.header 
-        className={`fixed top-0 right-0 left-0 z-50 glass-void ${isMobile ? 'h-16' : 'h-20'}`}
+        className={`fixed top-0 right-0 left-0 z-50 ${isMobile ? 'h-16' : 'h-20'}`}
+        style={{
+          background: 'rgba(15, 15, 35, 0.95)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        }}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
@@ -803,13 +800,6 @@ const TopBar = () => {
           }}
         />
       </motion.header>
-      
-      {/* Hologram Transition Effect */}
-      <HologramTransition
-        isActive={isWarping}
-        direction={warpDirection}
-        onComplete={handleWarpComplete}
-      />
     </>
   );
 };

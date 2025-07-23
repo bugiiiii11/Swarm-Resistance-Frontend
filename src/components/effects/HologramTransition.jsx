@@ -29,18 +29,26 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ 
+            duration: 0.2,
+            // Delay the parent exit until all children are done
+            exit: { duration: 0.1, delay: 1.0 }
+          }}
         >
-          {/* Simple background overlay */}
+          {/* Background overlay with staggered fade-out */}
           <motion.div
             className="absolute inset-0 bg-black/60"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ 
+              duration: 0.3,
+              // Delay the exit to fade out last
+              exit: { duration: 0.4, delay: 0.6 }
+            }}
           />
 
-          {/* Central hologram effect */}
+          {/* Central hologram effect - fades out first */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
               className="relative w-32 h-32"
@@ -50,7 +58,11 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
                 opacity: [0, 1, 0.8],
                 rotate: [0, direction === 'forward' ? 180 : -180]
               }}
-              exit={{ scale: 0, opacity: 0 }}
+              exit={{ 
+                scale: 0, 
+                opacity: 0,
+                transition: { duration: 0.3, delay: 0 }
+              }}
               transition={{ 
                 duration: 1,
                 ease: "easeInOut"
@@ -64,6 +76,11 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
                 }}
                 animate={{
                   rotate: [0, direction === 'forward' ? 360 : -360]
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.8,
+                  transition: { duration: 0.3, delay: 0 }
                 }}
                 transition={{
                   duration: 2,
@@ -82,6 +99,11 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
                 animate={{
                   scale: [0.8, 1.1, 0.9],
                   opacity: [0.6, 1, 0.7]
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 1.5,
+                  transition: { duration: 0.3, delay: 0.1 }
                 }}
                 transition={{
                   duration: 1.5,
@@ -106,6 +128,11 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
                     opacity: [0.4, 1, 0.4],
                     scaleY: [0.8, 1.4, 0.8]
                   }}
+                  exit={{
+                    opacity: 0,
+                    scaleY: 0,
+                    transition: { duration: 0.2, delay: i * 0.05 }
+                  }}
                   transition={{
                     duration: 0.8,
                     delay: i * 0.1,
@@ -117,7 +144,7 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
             </motion.div>
           </div>
 
-          {/* Channel indicator */}
+          {/* Channel indicator - fades out with hologram */}
           <motion.div
             className="absolute top-8 right-8 font-mono text-2xl font-bold text-cyan-400"
             style={{
@@ -125,13 +152,17 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
             }}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            exit={{ 
+              opacity: 0, 
+              x: -20,
+              transition: { duration: 0.3, delay: 0.1 }
+            }}
             transition={{ duration: 0.4 }}
           >
             {direction === 'forward' ? '>>>' : '<<<'}
           </motion.div>
 
-          {/* Simple scan lines */}
+          {/* Scan lines - fade out second */}
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(6)].map((_, i) => (
               <motion.div
@@ -146,7 +177,11 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
                   scaleX: [0, 1, 0.8],
                   opacity: [0, 0.8, 0.5]
                 }}
-                exit={{ scaleX: 0, opacity: 0 }}
+                exit={{ 
+                  scaleX: 0, 
+                  opacity: 0,
+                  transition: { duration: 0.3, delay: 0.2 + (i * 0.02) }
+                }}
                 transition={{
                   duration: 0.6,
                   delay: i * 0.05,
@@ -156,7 +191,7 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
             ))}
           </div>
 
-          {/* Corner brackets */}
+          {/* Corner brackets - fade out third */}
           {[
             { position: 'top-4 left-4', rotation: 0 },
             { position: 'top-4 right-4', rotation: 90 },
@@ -172,7 +207,11 @@ const HologramTransition = ({ isActive = false, onComplete = () => {}, direction
               }}
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 0.8, scale: 1 }}
-              exit={{ opacity: 0, scale: 0 }}
+              exit={{ 
+                opacity: 0, 
+                scale: 0,
+                transition: { duration: 0.25, delay: 0.4 + (i * 0.03) }
+              }}
               transition={{
                 duration: 0.4,
                 delay: i * 0.05
